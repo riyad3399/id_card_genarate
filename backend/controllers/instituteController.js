@@ -5,8 +5,7 @@ const allowedTypes = ["school", "college", "university", "training_center"];
 
 const createInstitute = async (req, res) => {
   try {
-    console.log("Incoming body:", req.body);
-    console.log("Incoming files:", req.files || req.file);
+
 
     const shortName = req.body.shortName || req.body.sohortName || null;
 

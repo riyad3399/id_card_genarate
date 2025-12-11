@@ -9,6 +9,7 @@ import Institutions from "./pages/Institutions";
 import GenerateIdCard from "./pages/GenerateIdCard";
 import ShowAllIdCard from "./components/idCardForm/ShowAllIdCard";
 import ShowIdCardBack from "./components/idCardForm/ShowIdCardBack";
+import MultipleIdCardForm from "./components/idCardForm/MultipleIdCardForm";
 
 export default function App() {
   return (
@@ -24,6 +25,9 @@ export default function App() {
           <Route path="/generate-id-card" element={<GenerateIdCard />} />
           <Route path="/show-all-id-card" element={<ShowAllIdCard />} />
           <Route path="/show-id-card-back" element={<ShowIdCardBack />} />
+          <Route path="/create-multiple-id-card" element={<MultipleIdCardForm />} />
+          
+
         </Routes>
       </BrowserRouter>
     </div>

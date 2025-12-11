@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 
-const { createStudent, getStudents } = require("../controllers/studentController");
+const { createStudent, getStudents, createStudentsBulk } = require("../controllers/studentController");
 
 // Multer Storage
 const studentStorage = multer.diskStorage({
@@ -24,20 +24,16 @@ router.post(
   createStudent
 );
 
+// add multiple students
+router.post(
+  "/add-multiple",
+  uploadStudent.fields([{ name: "photo" }]),
+  createStudentsBulk
+);
+
 // GET ALL
 router.get("/", getStudents);
 
-// // GET ONE
-// router.get("/:id", getSingleStudent);
 
-// // UPDATE
-// router.put(
-//   "/update/:id",
-//   uploadStudent.fields([{ name: "photo", maxCount: 1 }]),
-//   updateStudent
-// );
-
-// // DELETE
-// router.delete("/delete/:id", deleteStudent);
 
 module.exports = router;

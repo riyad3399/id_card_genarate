@@ -70,7 +70,7 @@ export default function ShowAllIdCard() {
       {!loading && !error && students.length > 0 && (
         <>
           {!showPrintable ? (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-5 gap-4">
               {students.map((std) => (
                 <StudentIDCard
                   key={std._id || std.id}

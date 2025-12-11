@@ -8,6 +8,7 @@ export default function AddInstitute() {
     address: "",
     contactEmail: "",
     phone: "",
+    
     eiin: "",
     estd: "",
     website: "",
@@ -51,26 +52,50 @@ export default function AddInstitute() {
     setLoading(true);
     setMessage("");
 
+    // basic client-side required check
+    const required = [
+      "name",
+      "type",
+      "address",
+      "contactEmail",
+      "phone",
+      "eiin",
+      "website",
+    ];
+    const missing = required.filter(
+      (key) => !form[key] || String(form[key]).trim() === ""
+    );
+    if (missing.length) {
+      setMessage("❌ Missing required fields: " + missing.join(", "));
+      setLoading(false);
+      return;
+    }
+
+    console.log("Institute submit", form);
+
     try {
       const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) =>
-        formData.append(key, value)
-      );
+      // append only keys that have value (optional)
+      Object.entries(form).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) formData.append(key, value);
+      });
       if (logo) formData.append("logo", logo);
       if (signature) formData.append("signature", signature);
 
       const res = await fetch("http://localhost:5000/api/institutes/add", {
         method: "POST",
-        body: formData,
+        body: formData, // don't set Content-Type when using FormData
       });
 
       const data = await res.json();
+      console.log("Server response:", res.status, data);
+
       if (res.ok) {
         setMessage("✅ Institute added successfully!");
         setForm({
           name: "",
           type: "",
-          sohortName:"",
+          shortName: "", // rename sohortName -> shortName if you change state
           address: "",
           contactEmail: "",
           phone: "",
@@ -83,7 +108,19 @@ export default function AddInstitute() {
         setSignature(null);
         setSignaturePreview(null);
       } else {
-        setMessage("❌ Failed: " + (data.message || "Something went wrong"));
+        // show detailed server message if present
+        const errMsg = data?.message || "Something went wrong";
+        if (data?.errors) {
+          // append mongoose validation errors
+          const details = Object.entries(data.errors)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join(" | ");
+          setMessage(`❌ Failed: ${errMsg} - ${details}`);
+        } else if (data?.keyValue) {
+          setMessage(`❌ Duplicate: ${JSON.stringify(data.keyValue)}`);
+        } else {
+          setMessage("❌ Failed: " + errMsg);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -92,6 +129,7 @@ export default function AddInstitute() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="max-w-7xl mx-auto mt-6 bg-base-100 p-8 rounded-2xl shadow-lg ring ring-gray-200">

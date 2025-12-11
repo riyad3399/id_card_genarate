@@ -6,7 +6,7 @@ export default function Home() {
   const tabs = [
     { label: "Institutions", path: "/institutions" },
     { label: "Create Single Card", path: "/generate-id-card" },
-    { label: "Create Bulk Cards", path: "/create-bulk-cards" },
+    { label: "Create Multiple Cards", path: "/create-multiple-id-card" },
     { label: "Show all ID Card", path: "/show-all-id-card" },
     { label: "Show ID Card Back side", path: "/show-id-card-back" },
   ];
