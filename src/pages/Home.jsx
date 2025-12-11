@@ -6,13 +6,13 @@ export default function Home() {
   const tabs = [
     { label: "Institutions", path: "/institutions" },
     { label: "Create Single Card", path: "/generate-id-card" },
-    { label: "Create Multiple Cards", path: "/create-multiple-id-card" },
+    { label: "Bulk Student Upload", path: "/bulk-student-upload" },
     { label: "Show all ID Card", path: "/show-all-id-card" },
     { label: "Show ID Card Back side", path: "/show-id-card-back" },
   ];
 
   return (
-    <div className="  flex justify-center items-center ">
+    <div className=" flex justify-center items-center ">
       <div className="tabs tabs-boxed flex flex-wrap gap-2 lg:gap-6 justify-start">
         {tabs.map((tab) => {
           const isActive = location.pathname === tab.path;

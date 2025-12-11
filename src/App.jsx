@@ -1,7 +1,4 @@
-// src/App.jsx
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Navbar from "./components/Navbar";
@@ -9,7 +6,7 @@ import Institutions from "./pages/Institutions";
 import GenerateIdCard from "./pages/GenerateIdCard";
 import ShowAllIdCard from "./components/idCardForm/ShowAllIdCard";
 import ShowIdCardBack from "./components/idCardForm/ShowIdCardBack";
-import MultipleIdCardForm from "./components/idCardForm/MultipleIdCardForm";
+import BulkStudentUpload from "./components/idCardForm/BulkStudentUpload";
 
 export default function App() {
   return (
@@ -25,9 +22,7 @@ export default function App() {
           <Route path="/generate-id-card" element={<GenerateIdCard />} />
           <Route path="/show-all-id-card" element={<ShowAllIdCard />} />
           <Route path="/show-id-card-back" element={<ShowIdCardBack />} />
-          <Route path="/create-multiple-id-card" element={<MultipleIdCardForm />} />
-          
-
+          <Route path="/bulk-student-upload" element={<BulkStudentUpload/>} />
         </Routes>
       </BrowserRouter>
     </div>
