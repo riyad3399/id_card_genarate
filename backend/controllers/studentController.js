@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const fs = require("fs");
 const csv = require("csvtojson");
+const path = require("path");
 const Student = require("../models/Student");
 const Institute = require("../models/Institute");
 
@@ -282,7 +283,61 @@ const bulkCreateStudents = async (req, res) => {
   }
 };
 
+// upload students photo by studentId
+const uploadStudentPhotosByStudentId = async (req, res) => {
+  try {
+    if (!req.files || !req.files.length) {
+      return res.status(400).json({ ok: false, message: "No photos uploaded" });
+    }
 
+    if (!req.files || !req.files.length) {
+      return res.status(400).json({
+        ok: false,
+        message: "No photos received",
+      });
+    }
+
+
+    const results = [];
+
+    for (const file of req.files) {
+      const ext = path.extname(file.originalname);
+      const studentId = path.basename(file.originalname, ext);
+
+      const student = await Student.findOne({ studentId });
+
+      if (!student) {
+        results.push({
+          file: file.originalname,
+          status: "student not found",
+        });
+        continue;
+      }
+
+      student.photo_url = `/uploads/students/${file.filename}`;
+      await student.save();
+
+      results.push({
+        file: file.originalname,
+        studentId,
+        status: "uploaded",
+      });
+    }
+
+    return res.json({
+      ok: true,
+      message: "Student photos uploaded successfully",
+      results,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      message: "Server error",
+      error: err.message,
+    });
+  }
+};
 
 
 const getStudents = async (req, res) => {
@@ -314,4 +369,5 @@ module.exports = {
   deleteStudent,
   updateStudent,
   bulkCreateStudents,
+  uploadStudentPhotosByStudentId,
 };

@@ -17,6 +17,7 @@ const {
   createStudent,
   getStudents,
   bulkCreateStudents,
+  uploadStudentPhotosByStudentId,
 } = require("../controllers/studentController");
 
 // ------------------- Multer storages -------------------
@@ -67,9 +68,17 @@ router.post(
   createStudent
 );
 
-// ADD MULTIPLE (bulk CSV) — expects form-data with field 'file' containing CSV
-// Optional: you can also send 'institute' as a text field in the same form-data to override CSV institute column
+// UPLOAD STUDENT PHOTOS BY STUDENT ID
 router.post("/add-multiple", uploadCSV.single("file"), bulkCreateStudents);
+
+// UPLOAD STUDENT PHOTOS BY STUDENT ID
+router.post(
+  "/upload-photos-studentid",
+  uploadStudent.array("photos", 20),
+  uploadStudentPhotosByStudentId
+);
+
+
 
 // GET ALL
 router.get("/", getStudents);

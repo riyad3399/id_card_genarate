@@ -9,6 +9,7 @@ export default function Home() {
     { label: "Bulk Student Upload", path: "/bulk-student-upload" },
     { label: "Show all ID Card", path: "/show-all-id-card" },
     { label: "Show ID Card Back side", path: "/show-id-card-back" },
+    { label: "StudentId Wise Photo Upload", path: "/studentid-wise-photo-upload" },
   ];
 
   return (

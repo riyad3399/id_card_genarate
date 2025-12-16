@@ -1,19 +1,54 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
+
 import {
   StudentIDCard,
   IDCardPrintableSheet,
 } from "../idCardTemplate/StudentIDCard";
 
-
 export default function ShowAllIdCard() {
+  const getUniqueValues = (arr, key) => {
+    return [...new Set(arr.map((i) => i?.[key]).filter(Boolean))];
+  };
+
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [institutes, setInstitutes] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showPrintable, setShowPrintable] = useState(false);
+  const [hasFiltered, setHasFiltered] = useState(false);
 
+  const [filters, setFilters] = useState({
+    instituteId: "",
+    className: "",
+    section: "",
+    groupName: "",
+  });
+
+  const printRef = useRef(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: "Student-ID-Cards",
+  });
+
+  /* ---------- fetch institutes ---------- */
+  useEffect(() => {
+    fetch("http://localhost:5000/api/institutes")
+      .then((res) => res.json())
+      .then((data) => {
+        setInstitutes(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {});
+  }, []);
+
+  /* ---------- fetch students ---------- */
   useEffect(() => {
     let mounted = true;
     const controller = new AbortController();
+
     const getAllStudents = async () => {
       setLoading(true);
       setError(null);
@@ -38,10 +73,57 @@ export default function ShowAllIdCard() {
     };
   }, []);
 
+  /* ---------- filter handlers ---------- */
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((p) => ({ ...p, [name]: value }));
+  };
+
+  const handleFilter = () => {
+    let result = [...students];
+
+    if (filters.instituteId) {
+      result = result.filter((s) => s?.institute?._id === filters.instituteId);
+    }
+    if (filters.className) {
+      result = result.filter((s) => s?.className === filters.className);
+    }
+    if (filters.section) {
+      result = result.filter((s) => s?.section === filters.section);
+    }
+    if (filters.groupName) {
+      result = result.filter((s) => s?.groupName === filters.groupName);
+    }
+
+    setFilteredStudents(result);
+    setHasFiltered(true);
+  };
+
+  const resetFilter = () => {
+    setFilters({
+      instituteId: "",
+      className: "",
+      section: "",
+      groupName: "",
+    });
+    setFilteredStudents([]);
+    setHasFiltered(false);
+  };
+
+  const baseStudents = filters.instituteId
+    ? students.filter((s) => s?.institute?._id === filters.instituteId)
+    : students;
+
+  const classOptions = getUniqueValues(baseStudents, "className");
+  const sectionOptions = getUniqueValues(baseStudents, "section");
+  const groupOptions = getUniqueValues(baseStudents, "groupName");
+
   return (
-    <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
+    <div className="p-4 space-y-4">
+      {/* HEADER */}
+      <div className="flex items-center justify-between">
         <h1 className="text-lg font-bold">All Student ID Cards</h1>
+
         <div className="flex gap-2">
           <button
             onClick={() => setShowPrintable((s) => !s)}
@@ -49,48 +131,130 @@ export default function ShowAllIdCard() {
           >
             {showPrintable ? "Hide Printable" : "Show Printable"}
           </button>
+
           <button
-            onClick={() => window.print()}
-            className="px-3 py-1 bg-green-600 text-white rounded"
+            onClick={handlePrint}
+            disabled={!hasFiltered || filteredStudents.length === 0}
+            className="px-3 py-1 bg-green-600 text-white rounded disabled:opacity-50"
           >
-            Print
+            🖨 Print
           </button>
         </div>
       </div>
 
-      {loading && (
-        <div className="text-sm text-slate-600">Loading students…</div>
-      )}
-      {error && <div className="text-sm text-red-600">Error: {error}</div>}
+      {/* FILTER BAR */}
+      <div className="bg-white border rounded-xl p-4 shadow-sm">
+        <div className="grid grid-cols-12 gap-3 items-end">
+          <select
+            name="instituteId"
+            value={filters.instituteId}
+            onChange={handleFilterChange}
+            className="select select-bordered col-span-4"
+          >
+            <option value="">Select Institute</option>
+            {institutes.map((inst) => (
+              <option key={inst._id} value={inst._id}>
+                {inst.name}
+              </option>
+            ))}
+          </select>
 
-      {!loading && !error && students.length === 0 && (
-        <div className="text-sm text-slate-600">No students found.</div>
+          {/* Class */}
+          <select
+            name="className"
+            value={filters.className}
+            onChange={handleFilterChange}
+            className="select select-bordered col-span-2"
+          >
+            <option value="">All Classes</option>
+            {classOptions.map((cls) => (
+              <option key={cls} value={cls}>
+                {cls}
+              </option>
+            ))}
+          </select>
+
+          {/* Section */}
+          <select
+            name="section"
+            value={filters.section}
+            onChange={handleFilterChange}
+            className="select select-bordered col-span-2"
+          >
+            <option value="">All Sections</option>
+            {sectionOptions.map((sec) => (
+              <option key={sec} value={sec}>
+                {sec}
+              </option>
+            ))}
+          </select>
+
+          {/* Group */}
+          <select
+            name="groupName"
+            value={filters.groupName}
+            onChange={handleFilterChange}
+            className="select select-bordered col-span-2"
+          >
+            <option value="">All Groups</option>
+            {groupOptions.map((grp) => (
+              <option key={grp} value={grp}>
+                {grp}
+              </option>
+            ))}
+          </select>
+
+          <div className="col-span-2 flex gap-2">
+            <button
+              onClick={handleFilter}
+              className="btn btn-primary btn-sm w-[70%]"
+            >
+              Show
+            </button>
+            <button
+              onClick={resetFilter}
+              className="btn btn-outline btn-sm w-[30%]"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* MESSAGE BEFORE FILTER */}
+      {!hasFiltered && !loading && (
+        <div className="text-sm text-slate-500 text-center">
+          🔍 Please select filter and click <b>Show</b> to view ID cards
+        </div>
       )}
 
-      {!loading && !error && students.length > 0 && (
-        <>
-          {!showPrintable ? (
-            <div className="grid grid-cols-5 gap-4">
-              {students.map((std) => (
-                <StudentIDCard
-                  key={std._id || std.id}
-                  data={std}
-                  theme="light"
-                  showQR={false}
-                  showBarcode={false}
-                />
-              ))}
-            </div>
-          ) : (
-            <IDCardPrintableSheet
-              students={students}
-              perRow={2}
-              theme="light"
-              showBack={false}
-            />
-          )}
-        </>
+      {/* NO RESULT */}
+      {hasFiltered && filteredStudents.length === 0 && (
+        <div className="text-sm text-slate-600 text-center">
+          No students found for selected filter.
+        </div>
       )}
+
+      {/* PREVIEW */}
+      {hasFiltered && filteredStudents.length > 0 && !showPrintable && (
+        <div className="grid grid-cols-5 gap-4">
+          {filteredStudents.map((std) => (
+            <StudentIDCard key={std._id || std.id} data={std} theme="light" />
+          ))}
+        </div>
+      )}
+
+      {/* PRINT AREA */}
+      <div className="hidden">
+        <div ref={printRef}>
+          <IDCardPrintableSheet
+            students={filteredStudents}
+            perRow={3}
+            theme="light"
+            showBack={false}
+          />
+        </div>
+      </div>
     </div>
   );
 }
