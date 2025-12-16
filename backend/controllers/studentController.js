@@ -4,6 +4,56 @@ const csv = require("csvtojson");
 const Student = require("../models/Student");
 const Institute = require("../models/Institute");
 
+
+const normalizeStudentPayload = (payload) => {
+  // normalize gender
+  let gender = payload.gender;
+  if (gender) {
+    const g = String(gender).trim().toLowerCase();
+    if (["male", "m"].includes(g)) gender = "Male";
+    else if (["female", "f"].includes(g)) gender = "Female";
+  }
+
+  // normalize DOB
+  let dob = undefined;
+  if (payload.dob) {
+    const d = new Date(payload.dob);
+    if (!isNaN(d)) {
+      dob = d;
+    }
+  }
+
+  return {
+    studentId: payload.studentId,
+    roll: payload.roll || null,
+
+    studentName: payload.studentName,
+    studentNameBn: payload.studentNameBn || null,
+
+    fatherName: payload.fatherName || null,
+    fatherNameBn: payload.fatherNameBn || null,
+
+    motherName: payload.motherName || null,
+    motherNameBn: payload.motherNameBn || null,
+
+    mobileNumber: payload.mobileNumber || null,
+    dob,
+
+    bloodGroup: payload.bloodGroup || null,
+    religion: payload.religion || null,
+    gender,
+
+    className: payload.className || null,
+    section: payload.section || null,
+    groupName: payload.groupName || null,
+    shiftName: payload.shiftName || null,
+
+    institute: payload.institute,
+    photo_url: payload.photo_url || null,
+  };
+};
+
+
 const normalizeKey = (k = "") =>
   String(k || "")
     .trim()
@@ -64,76 +114,54 @@ function mapRowToStudentObject(row) {
 // Create single student
 const createStudent = async (req, res) => {
   try {
-    const {
-      studentId,
-      roll,
-      studentName,
-      studentNameBn,
-      fatherName,
-      fatherNameBn,
-      motherName,
-      motherNameBn,
-      mobileNumber,
-      dob,
-      bloodGroup,
-      religion,
-      gender,
-      className,
-      section,
-      groupName,
-      shiftName,
-      institute,
-    } = req.body;
-
-    // photo handling: multer fields (upload.fields([{name: 'photo', maxCount: 1}]))
     const photo = req.files?.photo
       ? `/uploads/students/${req.files.photo[0].filename}`
       : null;
 
-    const newStudent = new Student({
-      studentId,
-      roll,
-      studentName,
-      studentNameBn,
-      fatherName,
-      fatherNameBn,
-      motherName,
-      motherNameBn,
-      mobileNumber,
-      dob: dob ? new Date(dob) : undefined,
-      bloodGroup,
-      religion,
-      gender,
-      className,
-      section,
-      groupName,
-      shiftName,
-      institute,
+    const payload = normalizeStudentPayload({
+      ...req.body,
       photo_url: photo,
     });
 
+    // required validation
+    if (!payload.studentId) {
+      return res
+        .status(400)
+        .json({ ok: false, message: "studentId is required" });
+    }
+
+    if (!payload.studentName) {
+      return res
+        .status(400)
+        .json({ ok: false, message: "studentName is required" });
+    }
+
+    const newStudent = new Student(payload);
     await newStudent.save();
 
-    return res
-      .status(201)
-      .json({ ok: true, message: "Student added", data: newStudent });
+    return res.status(201).json({
+      ok: true,
+      message: "Student added successfully",
+      data: newStudent,
+    });
   } catch (err) {
     console.error("createStudent error:", err);
-    // handle duplicate key nicely
+
     if (err.code === 11000) {
-      return res
-        .status(409)
-        .json({
-          ok: false,
-          message: "Duplicate key error",
-          error: err.message,
-        });
+      return res.status(409).json({
+        ok: false,
+        message: "Student already exists (duplicate studentId)",
+      });
     }
-    return res
-      .status(500)
-      .json({ ok: false, message: "Server error", error: err.message });
+
+    return res.status(500).json({
+      ok: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
+
 
 // Bulk create students from CSV
 const bulkCreateStudents = async (req, res) => {
@@ -141,255 +169,119 @@ const bulkCreateStudents = async (req, res) => {
     if (!req.file) {
       return res
         .status(400)
-        .json({ ok: false, message: "CSV file is required (field: file)" });
+        .json({ ok: false, message: "CSV file is required" });
     }
 
     const csvPath = req.file.path;
-    if (!fs.existsSync(csvPath)) {
-      return res
-        .status(500)
-        .json({
-          ok: false,
-          message: "Uploaded CSV file not found on server",
-          path: csvPath,
-        });
+    const rawRows = await csv().fromFile(csvPath);
+
+    if (!rawRows.length) {
+      fs.unlinkSync(csvPath);
+      return res.status(400).json({ ok: false, message: "CSV is empty" });
     }
 
-    // parse CSV
-    let rawRows;
-    try {
-      rawRows = await csv().fromFile(csvPath);
-    } catch (parseErr) {
-      console.error("CSV parse error:", parseErr);
-      try {
+    // institute handling
+    let instituteId = req.body?.institute || null;
+    if (!instituteId) {
+      const inst = await Institute.findOne().select("_id").lean();
+      if (!inst) {
         fs.unlinkSync(csvPath);
-      } catch (e) {}
-      return res
-        .status(400)
-        .json({
-          ok: false,
-          message: "Failed to parse CSV",
-          error: parseErr.message || parseErr,
-        });
-    }
-
-    if (!Array.isArray(rawRows) || rawRows.length === 0) {
-      try {
-        fs.unlinkSync(csvPath);
-      } catch (e) {}
-      return res
-        .status(400)
-        .json({ ok: false, message: "CSV is empty or unreadable" });
-    }
-
-    // Determine institute: prefer client-provided, otherwise fallback to first Institute in DB
-    let instituteFromClient =
-      req.body && req.body.institute ? String(req.body.institute).trim() : null;
-    if (!instituteFromClient) {
-      const anyInst = await Institute.findOne().select("_id").lean();
-      if (anyInst) {
-        instituteFromClient = String(anyInst._id);
-        console.log(
-          "No institute provided — using first institute id as fallback:",
-          instituteFromClient
-        );
-      } else {
-        try {
-          fs.unlinkSync(csvPath);
-        } catch (e) {}
         return res.status(400).json({
           ok: false,
-          message:
-            "No institute provided and no institutes exist on server. Please create an institute or send institute id in the upload form.",
+          message: "Institute not found. Please provide institute id.",
         });
       }
+      instituteId = inst._id.toString();
     }
 
     const studentsToInsert = [];
     const rowErrors = [];
 
-    for (let i = 0; i < rawRows.length; i++) {
-      const row = rawRows[i];
-      const rowIndex = i + 2;
-      let mapped;
+    rawRows.forEach((row, index) => {
+      const rowNumber = index + 2;
+
       try {
-        mapped = mapRowToStudentObject(row);
+        const mapped = mapRowToStudentObject(row);
+        mapped.institute = instituteId;
+        mapped.photo_url = null;
 
-        // ensure institute set
-        mapped.institute = instituteFromClient;
-
-        // required validations
-        if (!mapped.studentId || mapped.studentId === "") {
+        if (!mapped.studentId) {
           rowErrors.push({
-            row: rowIndex,
-            reason: "Missing studentId (STUDENT_ID)",
+            row: rowNumber,
+            reason: "Missing studentId",
           });
-          continue;
+          return;
         }
-        if (!mapped.studentName || mapped.studentName === "") {
+
+        if (!mapped.studentName) {
           rowErrors.push({
-            row: rowIndex,
-            reason: "Missing studentName (STUDENT_NAME)",
+            row: rowNumber,
+            reason: "Missing studentName",
           });
-          continue;
+          return;
         }
 
-        // DOB conversion
-        if (mapped.dob && mapped.dob !== "") {
-          const d = new Date(mapped.dob);
-          if (!isNaN(d)) {
-            mapped.dob = d;
-          } else {
-            const parts = mapped.dob.split(/[\/\-\.\s]/).map((p) => p.trim());
-            if (parts.length === 3) {
-              const [a, b, c] = parts;
-              const alt = new Date(`${c}-${b}-${a}`);
-              if (!isNaN(alt)) mapped.dob = alt;
-              else {
-                rowErrors.push({
-                  row: rowIndex,
-                  reason: `Invalid DOB format: ${mapped.dob}`,
-                });
-                continue;
-              }
-            } else {
-              rowErrors.push({
-                row: rowIndex,
-                reason: `Invalid DOB format: ${mapped.dob}`,
-              });
-              continue;
-            }
-          }
-        }
-
-        // Normalize gender
-        if (mapped.gender) {
-          const g = String(mapped.gender).trim().toLowerCase();
-          if (["male", "m"].includes(g)) mapped.gender = "Male";
-          else if (["female", "f"].includes(g)) mapped.gender = "Female";
-        }
-
-        studentsToInsert.push(mapped);
-      } catch (rowErr) {
-        console.error(`Row mapping error at row ${rowIndex}:`, rowErr);
+        studentsToInsert.push(normalizeStudentPayload(mapped));
+      } catch (err) {
         rowErrors.push({
-          row: rowIndex,
-          reason: `Row processing error: ${rowErr.message || rowErr}`,
+          row: rowNumber,
+          reason: err.message,
         });
       }
-    }
-
-    if (studentsToInsert.length === 0) {
-      try {
-        fs.unlinkSync(csvPath);
-      } catch (e) {}
-      return res
-        .status(400)
-        .json({ ok: false, message: "No valid rows to insert", rowErrors });
-    }
-
-    // pre-check duplicates
-    const incomingIds = studentsToInsert.map((s) => s.studentId);
-    const existing = await Student.find({ studentId: { $in: incomingIds } })
-      .select("studentId")
-      .lean();
-    const existingIds = new Set(existing.map((e) => e.studentId));
-    const dupRows = [];
-    const filteredToInsert = studentsToInsert.filter((s) => {
-      if (existingIds.has(s.studentId)) {
-        dupRows.push({
-          studentId: s.studentId,
-          reason: "Already exists in DB",
-        });
-        return false;
-      }
-      return true;
     });
 
-    if (filteredToInsert.length === 0) {
-      try {
-        fs.unlinkSync(csvPath);
-      } catch (e) {}
-      return res
-        .status(409)
-        .json({
-          ok: false,
-          message:
-            "All rows conflict with existing records (studentId duplicates)",
-          duplicates: dupRows,
-          rowErrors,
-        });
-    }
-
-    // insertMany
-    let insertResult = { insertedCount: 0, insertedIds: [], writeErrors: [] };
-    try {
-      const insertedDocs = await Student.insertMany(filteredToInsert, {
-        ordered: false,
-      });
-      insertResult.insertedCount = insertedDocs.length;
-      insertResult.insertedIds = insertedDocs.map((d) => d._id);
-    } catch (insertErr) {
-      console.error("insertMany error:", insertErr);
-      if (
-        insertErr &&
-        insertErr.writeErrors &&
-        Array.isArray(insertErr.writeErrors)
-      ) {
-        insertResult.writeErrors = insertErr.writeErrors.map((we) => ({
-          index: we.index,
-          errmsg: we.errmsg,
-          code: we.code,
-          op: we.op,
-        }));
-        insertResult.insertedCount =
-          (insertErr.result && insertErr.result.nInserted) ||
-          insertResult.insertedCount;
-      } else {
-        try {
-          fs.unlinkSync(csvPath);
-        } catch (e) {}
-        return res
-          .status(500)
-          .json({
-            ok: false,
-            message: "Error inserting students",
-            error: insertErr.message || String(insertErr),
-          });
-      }
-    }
-
-    // cleanup uploaded CSV
-    try {
+    if (!studentsToInsert.length) {
       fs.unlinkSync(csvPath);
-    } catch (e) {
-      console.warn("Could not delete CSV:", e?.message || e);
+      return res.status(400).json({
+        ok: false,
+        message: "No valid rows found",
+        rowErrors,
+      });
     }
+
+    // remove duplicates
+    const ids = studentsToInsert.map((s) => s.studentId);
+    const existing = await Student.find({ studentId: { $in: ids } })
+      .select("studentId")
+      .lean();
+
+    const existingIds = new Set(existing.map((e) => e.studentId));
+    const finalInsert = studentsToInsert.filter(
+      (s) => !existingIds.has(s.studentId)
+    );
+
+    if (!finalInsert.length) {
+      fs.unlinkSync(csvPath);
+      return res.status(409).json({
+        ok: false,
+        message: "All students already exist",
+      });
+    }
+
+    const insertedDocs = await Student.insertMany(finalInsert, {
+      ordered: false,
+    });
+
+    fs.unlinkSync(csvPath);
 
     return res.status(200).json({
       ok: true,
-      message: "CSV processed",
+      message: "Bulk students added successfully",
       totalRows: rawRows.length,
-      parsedRows: studentsToInsert.length,
-      duplicatesSkipped: dupRows.length,
-      duplicates: dupRows,
-      insertedCount: insertResult.insertedCount,
-      insertErrors: insertResult.writeErrors,
+      insertedCount: insertedDocs.length,
+      skippedDuplicates: existingIds.size,
       rowErrors,
-      instituteUsed: instituteFromClient || "from CSV (if present)",
     });
   } catch (err) {
-    console.error("bulkCreateStudents unexpected error:", err);
-    return res
-      .status(500)
-      .json({
-        ok: false,
-        message: "Server error",
-        error: err.message,
-        stack: err.stack,
-      });
+    console.error("bulkCreateStudents error:", err);
+    return res.status(500).json({
+      ok: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
+
 
 
 

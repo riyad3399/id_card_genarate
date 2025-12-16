@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { UploadCloud, FileText, DownloadCloud, Trash2 } from "lucide-react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 /**
  * BulkStudentUpload.jsx
@@ -91,6 +92,9 @@ export default function BulkStudentUpload() {
           timeout: 5 * 60 * 1000, // 5 minutes in case of large file
         }
       );
+      if (res.status === 200) {
+        toast.success("File uploaded successfully");
+      }
 
       // success
       setLoading(false);
