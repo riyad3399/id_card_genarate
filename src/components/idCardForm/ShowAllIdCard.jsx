@@ -6,6 +6,19 @@ import {
   IDCardPrintableSheet,
 } from "../idCardTemplate/StudentIDCard";
 
+const ID_CARD_DESIGNS = [
+  { key: "design1", label: "Design-1" },
+  { key: "design2", label: "Design-2" },
+  { key: "design3", label: "Design-3" },
+  { key: "design4", label: "Design-4" },
+  { key: "design5", label: "Design-5" },
+  { key: "design6", label: "Design-6" },
+  { key: "design7", label: "Design-7" },
+  { key: "design8", label: "Design-8" },
+  { key: "design9", label: "Design-9" },
+  { key: "design10", label: "Design-10" },
+];
+
 export default function ShowAllIdCard() {
   const getUniqueValues = (arr, key) => {
     return [...new Set(arr.map((i) => i?.[key]).filter(Boolean))];
@@ -19,6 +32,8 @@ export default function ShowAllIdCard() {
   const [error, setError] = useState(null);
   const [showPrintable, setShowPrintable] = useState(false);
   const [hasFiltered, setHasFiltered] = useState(false);
+
+  const [selectedDesign, setSelectedDesign] = useState("design1");
 
   const [filters, setFilters] = useState({
     instituteId: "",
@@ -142,14 +157,15 @@ export default function ShowAllIdCard() {
         </div>
       </div>
 
-      {/* FILTER BAR */}
+      {/* FILTER + DESIGN BAR */}
       <div className="bg-white border rounded-xl p-4 shadow-sm">
         <div className="grid grid-cols-12 gap-3 items-end">
+          {/* Institute */}
           <select
             name="instituteId"
             value={filters.instituteId}
             onChange={handleFilterChange}
-            className="select select-bordered col-span-4"
+            className="select select-bordered col-span-3"
           >
             <option value="">Select Institute</option>
             {institutes.map((inst) => (
@@ -204,6 +220,19 @@ export default function ShowAllIdCard() {
             ))}
           </select>
 
+          {/* DESIGN SELECT */}
+          <select
+            value={selectedDesign}
+            onChange={(e) => setSelectedDesign(e.target.value)}
+            className="select select-bordered col-span-1"
+          >
+            {ID_CARD_DESIGNS.map((design) => (
+              <option key={design.key} value={design.key}>
+                {design.label}
+              </option>
+            ))}
+          </select>
+
           <div className="col-span-2 flex gap-2">
             <button
               onClick={handleFilter}
@@ -239,7 +268,11 @@ export default function ShowAllIdCard() {
       {hasFiltered && filteredStudents.length > 0 && !showPrintable && (
         <div className="grid grid-cols-5 gap-4">
           {filteredStudents.map((std) => (
-            <StudentIDCard key={std._id || std.id} data={std} theme="light" />
+            <StudentIDCard
+              key={std._id || std.id}
+              data={std}
+              design={selectedDesign}
+            />
           ))}
         </div>
       )}
@@ -249,8 +282,8 @@ export default function ShowAllIdCard() {
         <div ref={printRef}>
           <IDCardPrintableSheet
             students={filteredStudents}
+            design={selectedDesign}
             perRow={3}
-            theme="light"
             showBack={false}
           />
         </div>

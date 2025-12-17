@@ -1,0 +1,117 @@
+import formatDOB from "../../helper/formatDOB";
+
+const baseUrl = "http://localhost:5000";
+const fullUrl = (p) =>
+  !p
+    ? ""
+    : p.startsWith("http")
+    ? p
+    : `${baseUrl}${p.startsWith("/") ? "" : "/"}${p}`;
+
+export default function Design6({ data }) {
+  const photo = fullUrl(data?.photo_url);
+  const logo = fullUrl(data?.institute?.logo_url);
+  const signature = fullUrl(data?.institute?.signature_url);
+
+  return (
+    <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 font-sans">
+      {/* ===== TOP DARK AREA ===== */}
+      <div className="relative h-[40%] bg-[#2e2e2e] text-center text-white px-3 pt-2">
+        {/* Logo */}
+        {logo && (
+          <img
+            src={logo}
+            alt="logo"
+            className="w-8 h-8 mx-auto mb-1 bg-white p-[2px] rounded"
+          />
+        )}
+
+        <p className="text-[11px] font-bold uppercase leading-tight">
+          {data?.institute?.shortName || "UNILOGO"}
+        </p>
+
+        {/* PHOTO */}
+        <div className="absolute left-1/2 -bottom-10 -translate-x-1/2 z-20">
+          <div className="w-[78px] h-[95px] rounded-[12px] bg-white border-[3px] border-green-500 overflow-hidden">
+            {photo ? (
+              <img
+                src={photo}
+                alt="profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-[9px] text-gray-400 flex items-center justify-center h-full">
+                PHOTO
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <svg
+        className="absolute top-[38%] left-0 w-full z-0"
+        viewBox="0 0 500 60"
+        preserveAspectRatio="none"
+      >
+        <path d="M0,25 C150,55 350,0 500,30 L500,0 L0,0 Z" fill="#22c55e" />
+      </svg>
+
+      {/* ===== BODY ===== */}
+      <div className="pt-12 px-3 text-center">
+        <p className="text-[11px] font-bold uppercase text-gray-800 truncate">
+          {data?.studentName || "YOUR NAME"}
+        </p>
+
+        <div className="mt-2 text-[9.5px] text-gray-700 text-left space-y-[2px]">
+          <p>
+            <b>ID No</b> : {data?.studentId || "-"}
+          </p>
+          <p>
+            <b>Roll</b> : {data?.roll || "-"}
+          </p>
+          <p>
+            <b>Father</b> : {data?.fatherName || "-"}
+          </p>
+          <p>
+            <b>Class</b> : {data?.className || "-"}
+          </p>
+
+          {data?.groupName && (
+            <p>
+              <b>Group</b> : {data?.groupName}
+            </p>
+          )}
+
+          {data?.dob && (
+            <p>
+              <b>DOB</b> : {formatDOB(data?.dob)}
+            </p>
+          )}
+
+          <p>
+            <b>Phone</b> : {data?.mobileNumber || "-"}
+          </p>
+        </div>
+      </div>
+
+      {/* ===== SIGNATURE ===== */}
+      <div className="absolute bottom-[20px] right-3 text-center">
+        {signature && (
+          <img
+            src={signature}
+            alt="signature"
+            className="h-7 mx-auto mb-[2px]"
+          />
+        )}
+        <p className="text-[9px] border-t font-semibold">Principal</p>
+      </div>
+
+      {/* ===== BOTTOM BAR ===== */}
+      <div className="absolute bottom-0 left-0 w-full h-[18px] bg-green-500 flex items-center justify-center">
+        <p className="text-[9px] text-white font-semibold">
+          STUDENT IDENTITY CARD
+        </p>
+      </div>
+    </div>
+  );
+}
