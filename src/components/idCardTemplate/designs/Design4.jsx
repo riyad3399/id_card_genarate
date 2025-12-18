@@ -41,7 +41,7 @@ export default function Design4({ data }) {
 
       {/* ===== PHOTO ===== */}
       <div className="flex justify-center mt-[5px]">
-        <div className="w-[85px] h-[105px] border-[3px] border-blue-600 bg-white">
+        <div className="w-[90px] h-[100px] rounded-[7px] border-[3px] border-blue-600 bg-white">
           {photo ? (
             <img
               src={photo}

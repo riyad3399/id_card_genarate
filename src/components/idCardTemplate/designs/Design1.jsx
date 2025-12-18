@@ -18,7 +18,7 @@ export default function Design1({ data }) {
       {/* ===== Top Header ===== */}
       <div className="relative h-20 bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500 text-white px-3 pt-2">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full bg-white/30 backdrop-blur border border-white flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 rounded-full overflow-hidden">
             {logo ? (
               <img
                 src={logo}
@@ -38,7 +38,7 @@ export default function Design1({ data }) {
 
       {/* ===== Photo ===== */}
       <div className="relative flex justify-center mt-[-18px]">
-        <div className="w-[90px] h-[110px] rounded-xl border-[4px] border-white shadow-lg bg-gray-100 overflow-hidden">
+        <div className="w-[90px] h-[110px] rounded-xl border-[3px] border-white shadow-lg bg-gray-100 overflow-hidden">
           {photo ? (
             <img
               src={photo}

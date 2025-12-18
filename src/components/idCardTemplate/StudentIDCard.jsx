@@ -111,6 +111,7 @@ function IDCardPrintableSheet({
   perRow = 2,
   theme = "light",
   showBack = false,
+  design = "design1", 
 }) {
   const cols = Math.max(1, parseInt(String(perRow), 10) || 1);
 
@@ -134,26 +135,45 @@ function IDCardPrintableSheet({
               }}
             >
               <div className="transform scale-100 print:scale-100">
+                {/* FRONT CARD */}
                 <StudentIDCard
                   data={s}
+                  design={design} 
                   theme={theme}
                   showQR={!showBack}
                   showBarcode={false}
                 />
-                {showBack ? (
+
+                {/* BACK CARD (OPTIONAL) */}
+                {showBack && (
                   <div className="mt-2">
-                    <StudentIDCardBack data={s} theme={theme} />
+                    <StudentIDCardBack
+                      data={s}
+                      design={design} // (optional but safe)
+                      theme={theme}
+                    />
                   </div>
-                ) : null}
+                )}
               </div>
             </div>
           );
         })}
       </div>
 
-      <style>{`@media print{ body { -webkit-print-color-adjust: exact; } .no-print{ display:none } }`}</style>
+      <style>{`
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          .no-print {
+            display: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }
+
 
 export { StudentIDCard, InstituteBackCard, IDCardPrintableSheet };

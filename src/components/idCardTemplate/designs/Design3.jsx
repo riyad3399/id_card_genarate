@@ -1,71 +1,49 @@
-import { Droplet } from "lucide-react";
+import formatDOB from "../../helper/formatDOB";
 
 const baseUrl = "http://localhost:5000";
-
-function fullUrl(path) {
-  if (!path) return "";
-  if (path.startsWith("http")) return path;
-  return `${baseUrl}${path.startsWith("/") ? "" : "/"}${path}`;
-}
+const fullUrl = (p) =>
+  !p
+    ? ""
+    : p.startsWith("http")
+    ? p
+    : `${baseUrl}${p.startsWith("/") ? "" : "/"}${p}`;
 
 export default function Design3({ data }) {
-  const logo = fullUrl(data?.institute?.logo_url);
   const photo = fullUrl(data?.photo_url);
-  const signature = fullUrl(data?.institute?.signature_url);
+  const logo = fullUrl(data?.institute?.logo_url);
+    const signature = fullUrl(data?.institute?.signature_url);
+
 
   return (
-    <div className="relative w-[58mm] h-[90mm] bg-white border border-gray-400 shadow-xl overflow-hidden print:avoid-break-inside">
-      {/* ===== TOP BAND ===== */}
-      <div className="h-[14mm] bg-slate-800 text-white px-2 py-1 flex items-center gap-2">
-        <div className="w-8 h-8 bg-white rounded flex items-center justify-center overflow-hidden">
-          {logo ? (
-            <img
-              src={logo}
-              alt="logo"
-              className="w-full h-full object-contain"
-            />
-          ) : (
-            <span className="text-[8px] text-black">LOGO</span>
-          )}
-        </div>
-        <p className="text-[10px] font-bold uppercase leading-tight">
-          {data?.institute?.name || "Institute Name"}
+    <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 font-sans">
+      {/* ===== BACKGROUND BLOBS ===== */}
+      <div className="absolute -top-6 -left-6 w-20 h-20 bg-orange-400 rounded-full opacity-80" />
+      <div className="absolute top-12 -right-6 w-20 h-20 bg-green-400 rounded-full opacity-80" />
+      <div className="absolute bottom-10 -left-6 w-16 h-16 bg-green-300 rounded-full opacity-70" />
+      <div className="absolute -top-10 left-8 w-16 h-16 bg-sky-500 rounded-full opacity-70" />
+      <div className="absolute bottom-0 -right-6 w-20 h-20 bg-orange-300 rounded-full opacity-80" />
+      <div className="absolute bottom-10 -right-9 w-16 h-16 bg-sky-300 rounded-full opacity-80" />
+
+      {/* ===== CONTENT ===== */}
+      <div className="relative z-10 px-3 pt-2 text-center">
+        {/* Logo */}
+        {logo && (
+          <div className="w-9 h-9 mx-auto rounded-full  ">
+            <img src={logo} alt="logo" className="w-full h-full" />
+          </div>
+        )}
+
+        {/* School Name */}
+        <p
+          className="mt-1 font-bold uppercase text-green-600 leading-tight"
+          style={{ fontSize: "clamp(13px,2vw,14px)" }}
+        >
+          {data?.institute?.name || "SCHOOL NAME"}
         </p>
-      </div>
 
-      {/* ===== BODY ===== */}
-      <div className="flex h-[62mm]">
-        {/* LEFT INFO BLOCK */}
-        <div className="w-[60%] px-2 pt-2 text-[9px] text-gray-800 space-y-[3px]">
-          <p className="text-[11px] font-extrabold uppercase text-slate-800 leading-tight">
-            {data?.studentName || "Student Name"}
-          </p>
-
-          <p>
-            <b>Class</b>: {data?.className || "-"}
-          </p>
-          <p>
-            <b>Section</b>: {data?.section || "-"}
-          </p>
-          <p>
-            <b>ID</b>:{" "}
-            <span className="font-mono">{data?.studentId || "-"}</span>
-          </p>
-          <p>
-            <b>Roll</b>: {data?.roll || "-"}
-          </p>
-          <p>
-            <b>Father</b>: {data?.fatherName || "-"}
-          </p>
-          <p>
-            <b>Phone</b>:{" "}
-            <span className="font-mono">{data?.mobileNumber || "-"}</span>
-          </p>
-        </div>
-
-        {/* RIGHT PHOTO BLOCK */}
-        <div className="relative w-[40%] flex items-center justify-center">
-          <div className="w-[72px] h-[92px] border-[3px] border-slate-800 bg-gray-100 overflow-hidden">
+        {/* PHOTO */}
+        <div className="mt-2 flex justify-center">
+          <div className="w-[70px] h-[86px] bg-white border-[3px] border-orange-400 flex items-center justify-center rounded-[7px]">
             {photo ? (
               <img
                 src={photo}
@@ -73,46 +51,49 @@ export default function Design3({ data }) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[9px] text-gray-400">
-                No Photo
-              </div>
+              <span className="text-[9px] text-gray-400">PHOTO</span>
             )}
           </div>
-
-          {/* BLOOD GROUP */}
-          {data?.bloodGroup && (
-            <div className="absolute bottom-1 right-1">
-              <div className="relative">
-                <Droplet
-                  size={26}
-                  className="fill-red-600 text-red-700"
-                  strokeWidth={1.2}
-                />
-                <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-white">
-                  {data.bloodGroup}
-                </span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* ===== SIGNATURE ===== */}
-      <div className="absolute bottom-[10mm] right-3 text-center">
-        {signature ? (
-          <img src={signature} alt="sign" className="h-6 mx-auto" />
-        ) : (
-          <div className="text-[8px] text-gray-400">Signature</div>
-        )}
-        <p className="text-[8px] font-semibold border-t leading-tight">
-          Headmaster
+      {/* ===== BODY ===== */}
+      <div className="relative z-10 mt-2 px-4 text-left text-gray-800 space-y-[2px]">
+        {/* Student Name */}
+        <p
+          className="font-bold uppercase text-green-600 text-center whitespace-nowrap overflow-hidden"
+          style={{ fontSize: "clamp(9px,1.6vw,11px)" }}
+        >
+          {data?.studentName || "JONTHAN DOW"}
         </p>
+
+        <Info label="Roll" value={data?.roll || "0125"} />
+        <Info label="Student ID" value={data?.studentId || "0125"} />
+        <Info label="Father's Name" value={data?.fatherName || "Father Name"} />
+        <Info label="Class" value={data?.className || "class Name"} />
+        <Info label="Group" value={data?.groupName || "0125"} />
+        <Info label="Gender" value={data?.gender || "Male"} />
+        <Info label="DOB" value={formatDOB(data?.dob) || "0125"} />
       </div>
 
-      {/* ===== FOOTER ===== */}
-      <div className="absolute bottom-0 w-full h-[6mm] bg-slate-800 text-white text-[9px] flex items-center justify-center tracking-wide">
-        Student Identity Card
+      <div className="absolute bottom-[14px] right-3 text-center z-10">
+        {signature && (
+          <img src={signature} alt="sign" className="h-8 mx-auto" />
+        )}
+        <p className="text-[8px] border-t font-medium">Principal </p>
       </div>
     </div>
+  );
+}
+
+/* ===== INFO ROW ===== */
+function Info({ label, value }) {
+  return (
+    <p
+      className="leading-tight whitespace-nowrap overflow-hidden"
+      style={{ fontSize: "clamp(7.5px,1.4vw,9.5px)" }}
+    >
+      <b>{label}</b> : {value}
+    </p>
   );
 }

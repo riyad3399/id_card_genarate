@@ -1,4 +1,3 @@
-import { Droplet } from "lucide-react";
 import formatDOB from "../../helper/formatDOB";
 
 const baseUrl = "http://localhost:5000";
@@ -11,123 +10,123 @@ const fullUrl = (p) =>
 
 export default function Design7({ data }) {
   const photo = fullUrl(data?.photo_url);
-    const logo = fullUrl(data?.institute?.logo_url);
-      const signature = fullUrl(data?.institute?.signature_url);
-
+  const logo = fullUrl(data?.institute?.logo_url);
+  const signature = fullUrl(data?.institute?.signature_url);
 
   return (
     <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 font-sans">
-      {/* ===== CURVED ORANGE HEADER ===== */}
-      <div className="relative h-[42%] bg-[#ffff] text-white text-center pt-2">
-        {/* Curve */}
-        <svg
-          className="absolute bottom-0 left-0 w-full h-[100%]"
-          viewBox="0 0 500 160"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,40 
-       C120,20 180,120 250,140
-       C320,120 380,20 500,40
-       L500,0 L0,0 Z"
-            fill="#f97316"
-          />
-        </svg>
-
-        {/* ===== LOGO ===== */}
+      {/* ================= TOP PURPLE HEADER ================= */}
+      <div className="relative h-[42%] bg-[#4c1d95] text-center text-white px-3 pt-2">
+        {/* LOGO */}
         {logo && (
           <img
             src={logo}
             alt="logo"
-            className="w-7 h-7 mx-auto mb-1 bg-white rounded-full relative z-10"
+            className="w-7 h-7 mx-auto mb-[2px] bg-white rounded-full"
           />
         )}
 
-        {/* Institute Name */}
-        <div className="relative z-10 px-3">
-          <p className="text-[11.5px] font-bold uppercase leading-tight text-black">
-            {data?.institute?.name || "ABC SCHOOL NAME"}
-          </p>
-        </div>
+        {/* INSTITUTE NAME */}
+        <p
+          className="font-bold leading-tight"
+          style={{ fontSize: "clamp(10px,1.6vw,12px)" }}
+        >
+          {data?.institute?.name || "Your School and College Name"}
+        </p>
 
-        {/* ===== PHOTO ===== */}
-        <div className="absolute left-1/2 bottom-[8px] -translate-x-1/2 z-20">
-          <div className="w-[78px] h-[78px] rounded-full bg-white p-[3px] shadow-md">
-            <div className="w-full h-full rounded-full overflow-hidden border-2 border-[#f97316]">
-              {photo ? (
-                <img
-                  src={photo}
-                  alt="student"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-[9px] text-gray-400">
-                  PHOTO
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-      <p className="text-[13px] text-center">{data?.studentName}</p>
-      {/* Blood Group */}
-      <div className="relative">
-        {data?.bloodGroup && (
-          <div className="absolute left-4 -top-15 z-10">
-            <div className="relative">
-              <Droplet
-                size={32}
-                className="fill-red-600 text-red-700 drop-shadow-lg"
-                strokeWidth={1.5}
+        {/* PHOTO */}
+        <div className="absolute left-1/2 -bottom-8 -translate-x-1/2 z-20">
+          <div className="w-[80px] h-[94px] rounded-[7px] bg-white border-[4px] border-[#FFA500] overflow-hidden shadow-md">
+            {photo ? (
+              <img
+                src={photo}
+                alt="student"
+                className="w-full h-full object-cover"
               />
-              <span className="absolute inset-0 flex items-center top-1 justify-center text-[8px] font-extrabold text-white">
-                {data.bloodGroup}
+            ) : (
+              <span className="text-[9px] text-gray-400 flex items-center justify-center h-full">
+                PHOTO
               </span>
-            </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
-      {/* ===== BODY ===== */}
-      <div className="pt-6 px-4 text-[9.5px] text-gray-800 space-y-[3px]">
-        <Row label="Roll" value={data?.roll || "123456"} />
-        <Row label="Student ID" value={data?.studentId || "1234"} />
-        <Row label="Father" value={data?.fatherName || "Name Here"} />
-        <Row label="Class" value={data?.className || "Class Here"} />
+      {/* ================= CURVE ================= */}
+      <svg
+        className="absolute top-[39%] left-0 w-full"
+        viewBox="0 0 500 80"
+        preserveAspectRatio="none"
+      >
+        <path d="M0,30 C150,80 350,0 500,30 L500,0 L0,0 Z" fill="#4c1d95" />
+        <path
+          d="M0,40 C150,90 350,10 500,40"
+          fill="none"
+          stroke="#FFA500"
+          strokeWidth="10"
+        />
+      </svg>
 
-        {/* ✅ DOB */}
-        {data?.dob && <Row label="DOB" value={formatDOB(data?.dob)} />}
+      {/* ================= BODY ================= */}
+      <div className="pt-10 px-4 text-gray-800">
+        {/* STUDENT NAME */}
+        <p
+          className="text-center font-bold text-[#4c1d95] whitespace-nowrap overflow-hidden leading-tight mb-2"
+          style={{ fontSize: "clamp(9px,1.6vw,11px)" }}
+        >
+          {data?.studentName || "Smith James"}
+        </p>
 
-        <Row label="Contact No" value={data?.mobileNumber || "123-456-7890"} />
+        {/* INFO LIST */}
+        <div className="space-y-[1px] text-[9.5px]">
+          <Info label="Roll" value={data?.roll || "-"} />
+          <Info label="Student ID" value={data?.studentId || "-"} />
+          <Info label="Class" value={data?.className || "-"} />
+          {data?.groupName && <Info label="Group" value={data?.groupName} />}
+
+          <Info label="Father" value={data?.fatherName || "-"} />
+          <Info label="Gender" value={data?.gender || "-"} />
+
+          {data?.dob && <Info label="DOB" value={formatDOB(data?.dob)} />}
+
+          <Info label="Phone" value={data?.mobileNumber || "-"} />
+        </div>
       </div>
-      {/* ===== SIGNATURE ===== */}
-      <div className="absolute bottom-[20px] right-3 text-center">
+
+      {/* ================= SIGNATURE ================= */}
+      <div className="absolute bottom-[14px] right-3 text-center">
         {signature && (
           <img
             src={signature}
             alt="signature"
-            className="h-7 mx-auto mb-[2px]"
+            className="h-6 mx-auto mb-[2px]"
           />
         )}
-        <p className="text-[9px] border-t font-semibold">Principal</p>
+        <p className="text-[8px] border-t font-semibold text-gray-700">
+          Principal
+        </p>
       </div>
 
-      {/* ===== FOOTER ===== */}
-      <div className="absolute bottom-0 left-0 w-full bg-[#f97316] text-white text-center py-[4px] px-2">
-        <p className="text-[8.5px] leading-tight truncate">
-          Student Identity Card
-        </p>
+      {/* ================= BOTTOM BAR ================= */}
+      <div className="absolute text-white text-center bottom-0 left-0 w-full h-[12px] text-[8px] bg-[#4c1d95]">
+        STUDENT IDENTITY CARD
       </div>
     </div>
   );
 }
 
-function Row({ label, value }) {
+/* ================= INFO ROW ================= */
+function Info({ label, value }) {
   return (
-    <div className="flex gap-1">
-      <span className="min-w-[42%] font-semibold">{label}</span>
+    <div className="grid grid-cols-[28%_5%_1fr] items-start">
+      <span className="font-semibold">{label}</span>
       <span>:</span>
-      <span className="truncate">{value}</span>
+      <span
+        className="whitespace-nowrap overflow-hidden"
+        style={{ fontSize: "clamp(7.5px,1.5vw,9.5px)" }}
+      >
+        {value}
+      </span>
     </div>
   );
 }

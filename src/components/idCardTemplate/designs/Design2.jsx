@@ -21,12 +21,12 @@ export default function Design2({ data }) {
       {/* ===== HEADER ===== */}
       <div className="ml-[6mm] px-2 pt-2">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 border rounded bg-white overflow-hidden flex items-center justify-center">
+          <div className="w-10 h-8  rounded-full bg-white overflow-hidden flex items-center justify-center">
             {logo ? (
               <img
                 src={logo}
                 alt="logo"
-                className="w-full h-full object-contain"
+                className=" object-contain w-full h-full"
               />
             ) : (
               <span className="text-[8px]">LOGO</span>
@@ -40,7 +40,7 @@ export default function Design2({ data }) {
 
       {/* ===== PHOTO ===== */}
       <div className="flex justify-center mt-2 ml-[6mm] relative">
-        <div className="w-[88px] h-[108px] border-[3px] border-emerald-600 bg-white overflow-hidden">
+        <div className="w-[90px] h-[100px] border-[3px] rounded-[7px] border-emerald-600 bg-white overflow-hidden">
           {photo ? (
             <img
               src={photo}

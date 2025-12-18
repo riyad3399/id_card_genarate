@@ -22,12 +22,12 @@ export default function Design6({ data }) {
           <img
             src={logo}
             alt="logo"
-            className="w-8 h-8 mx-auto mb-1 bg-white p-[2px] rounded"
+            className="w-8 h-8 mx-auto mb-1 bg-white  rounded-full"
           />
         )}
 
         <p className="text-[11px] font-bold uppercase leading-tight">
-          {data?.institute?.shortName || "UNILOGO"}
+          {data?.institute?.name || "INSTITUTE NAME"}
         </p>
 
         {/* PHOTO */}
@@ -58,38 +58,68 @@ export default function Design6({ data }) {
 
       {/* ===== BODY ===== */}
       <div className="pt-12 px-3 text-center">
-        <p className="text-[11px] font-bold uppercase text-gray-800 truncate">
-          {data?.studentName || "YOUR NAME"}
+        <p
+          className="font-bold uppercase text-gray-800 whitespace-nowrap overflow-hidden leading-tight"
+          style={{ fontSize: "clamp(7.5px, 1.6vw, 11px)" }}
+        >
+          {data?.studentName || "STUDENT NAME"}
         </p>
 
-        <div className="mt-2 text-[9.5px] text-gray-700 text-left space-y-[2px]">
-          <p>
-            <b>ID No</b> : {data?.studentId || "-"}
-          </p>
-          <p>
+        <div className="mt-2 text-[9.5px] text-gray-700 text-left space-y-[2px] ">
+          <p
+            className="leading-tight whitespace-nowrap overflow-hidden"
+            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+          >
             <b>Roll</b> : {data?.roll || "-"}
           </p>
-          <p>
+          <p
+            className="leading-tight whitespace-nowrap overflow-hidden"
+            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+          >
+            <b>ID No</b> : {data?.studentId || "-"}
+          </p>
+          <p
+            className="leading-tight whitespace-nowrap overflow-hidden"
+            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+          >
+            <b>Class</b> : {data?.className || "-"}
+          </p>
+          <p
+            className="leading-tight whitespace-nowrap overflow-hidden"
+            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+          >
             <b>Father</b> : {data?.fatherName || "-"}
           </p>
-          <p>
-            <b>Class</b> : {data?.className || "-"}
+          <p
+            className="leading-tight whitespace-nowrap overflow-hidden"
+            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+          >
+            <b>Gender</b> : {data?.gender || "-"}
           </p>
 
           {data?.groupName && (
-            <p>
+            <p
+              className="leading-tight whitespace-nowrap overflow-hidden"
+              style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+            >
               <b>Group</b> : {data?.groupName}
             </p>
           )}
 
           {data?.dob && (
-            <p>
+            <p
+              className="leading-tight whitespace-nowrap overflow-hidden"
+              style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+            >
               <b>DOB</b> : {formatDOB(data?.dob)}
             </p>
           )}
 
-          <p>
-            <b>Phone</b> : {data?.mobileNumber || "-"}
+          <p
+            className="leading-tight whitespace-nowrap overflow-hidden"
+            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+          >
+            <b>Phone</b> : {0 + data?.mobileNumber || "-"}
           </p>
         </div>
       </div>
@@ -107,7 +137,7 @@ export default function Design6({ data }) {
       </div>
 
       {/* ===== BOTTOM BAR ===== */}
-      <div className="absolute bottom-0 left-0 w-full h-[18px] bg-green-500 flex items-center justify-center">
+      <div className="absolute bottom-0 left-0 w-full h-[14px] bg-green-500 flex items-center justify-center">
         <p className="text-[9px] text-white font-semibold">
           STUDENT IDENTITY CARD
         </p>
