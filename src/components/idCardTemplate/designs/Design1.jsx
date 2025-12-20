@@ -18,18 +18,16 @@ export default function Design1({ data }) {
       {/* ===== Top Header ===== */}
       <div className="relative h-20 bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500 text-white px-3 pt-2">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full overflow-hidden">
+          <div className="w-16 h-9 rounded-full overflow-hidden bg-white">
             {logo ? (
-              <img
-                src={logo}
-                alt="logo"
-                className="w-full h-full object-contain"
-              />
+              <div className="w-full h-full mx-auto rounded-full ">
+                <img src={logo} alt="logo" className="w-full h-full" />
+              </div>
             ) : (
               <span className="text-[9px]">LOGO</span>
             )}
           </div>
-          <p className="text-[10px] font-semibold leading-tight uppercase">
+          <p className="text-[11px] font-semibold leading-tight uppercase">
             {data?.institute?.name || "Institute Name"}
           </p>
         </div>

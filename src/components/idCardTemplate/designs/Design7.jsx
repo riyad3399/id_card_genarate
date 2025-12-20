@@ -16,7 +16,7 @@ export default function Design7({ data }) {
   return (
     <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 font-sans">
       {/* ================= TOP PURPLE HEADER ================= */}
-      <div className="relative h-[42%] bg-[#4c1d95] text-center text-white px-3 pt-2">
+      <div className="relative h-[42%] bg-gradient-to-r from-[#4c1d95] to-[#2f4fa2] text-center text-white px-3 pt-2">
         {/* LOGO */}
         {logo && (
           <img
@@ -35,8 +35,8 @@ export default function Design7({ data }) {
         </p>
 
         {/* PHOTO */}
-        <div className="absolute left-1/2 -bottom-8 -translate-x-1/2 z-20">
-          <div className="w-[80px] h-[94px] rounded-[7px] bg-white border-[4px] border-[#FFA500] overflow-hidden shadow-md">
+        <div className="absolute left-1/2 -bottom-10 -translate-x-1/2 z-20">
+          <div className="w-[22mm] h-[27mm] rounded-[7px] bg-white border-[3px] border-[#FFA500] overflow-hidden shadow-md">
             {photo ? (
               <img
                 src={photo}
@@ -58,7 +58,17 @@ export default function Design7({ data }) {
         viewBox="0 0 500 80"
         preserveAspectRatio="none"
       >
-        <path d="M0,30 C150,80 350,0 500,30 L500,0 L0,0 Z" fill="#4c1d95" />
+        <defs>
+          <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#4c1d95" />
+            <stop offset="100%" stopColor="#2f4fa2" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0,30 C150,80 350,0 500,30 L500,0 L0,0 Z"
+          fill="url(#waveGrad)"
+        />
+
         <path
           d="M0,40 C150,90 350,10 500,40"
           fill="none"
@@ -68,7 +78,7 @@ export default function Design7({ data }) {
       </svg>
 
       {/* ================= BODY ================= */}
-      <div className="pt-10 px-4 text-gray-800">
+      <div className="pt-12 px-4 text-gray-800">
         {/* STUDENT NAME */}
         <p
           className="text-center font-bold text-[#4c1d95] whitespace-nowrap overflow-hidden leading-tight mb-2"
@@ -78,9 +88,21 @@ export default function Design7({ data }) {
         </p>
 
         {/* INFO LIST */}
-        <div className="space-y-[1px] text-[9.5px]">
-          <Info label="Roll" value={data?.roll || "-"} />
-          <Info label="Student ID" value={data?.studentId || "-"} />
+        <div className=" text-[9.5px]">
+          <div className="grid grid-cols-[28%_5%_1fr] items-start text-[9.5px] font-bold">
+            <span>ID</span>
+            <span>:</span>
+            <span
+              className="flex gap-3 whitespace-nowrap overflow-hidden"
+              style={{ fontSize: "clamp(7.5px,1.5vw,9.5px)" }}
+            >
+              <span>
+                {data?.institute?.shortName}
+                {data?.studentId || "-"}
+              </span>
+              <span>Roll : {data?.roll || "-"}</span>
+            </span>
+          </div>
           <Info label="Class" value={data?.className || "-"} />
           {data?.groupName && <Info label="Group" value={data?.groupName} />}
 
@@ -94,22 +116,22 @@ export default function Design7({ data }) {
       </div>
 
       {/* ================= SIGNATURE ================= */}
-      <div className="absolute bottom-[14px] right-3 text-center">
+      <div className="absolute bottom-[20px] right-3 text-center">
         {signature && (
           <img
             src={signature}
             alt="signature"
-            className="h-6 mx-auto mb-[2px]"
+            className="h-7 mx-auto mb-[2px]"
           />
         )}
-        <p className="text-[8px] border-t font-semibold text-gray-700">
-          Principal
-        </p>
+        <p className="text-[9.5px] border-t font-semibold ">Principal</p>
       </div>
 
       {/* ================= BOTTOM BAR ================= */}
-      <div className="absolute text-white text-center bottom-0 left-0 w-full h-[12px] text-[8px] bg-[#4c1d95]">
-        STUDENT IDENTITY CARD
+      <div className="absolute bottom-0 w-full h-[20px] bg-gradient-to-r from-[#4c1d95] to-[#2f4fa2] flex items-center justify-center">
+        <p className="text-[9px] text-white font-semibold">
+          Student Identity Card
+        </p>
       </div>
     </div>
   );
@@ -119,10 +141,10 @@ export default function Design7({ data }) {
 function Info({ label, value }) {
   return (
     <div className="grid grid-cols-[28%_5%_1fr] items-start">
-      <span className="font-semibold">{label}</span>
+      <span className="font-bold">{label}</span>
       <span>:</span>
       <span
-        className="whitespace-nowrap overflow-hidden"
+        className="whitespace-nowrap overflow-hidden font-bold"
         style={{ fontSize: "clamp(7.5px,1.5vw,9.5px)" }}
       >
         {value}

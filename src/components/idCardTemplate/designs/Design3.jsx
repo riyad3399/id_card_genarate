@@ -82,6 +82,9 @@ export default function Design3({ data }) {
         )}
         <p className="text-[8px] border-t font-medium">Principal </p>
       </div>
+      <div className="absolute text-white text-center bottom-0 left-0 w-full h-[12px] text-[8px] bg-gradient-to-r from-orange-600 to-green-500">
+        STUDENT IDENTITY CARD
+      </div>
     </div>
   );
 }

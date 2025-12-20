@@ -37,21 +37,24 @@ export default function Design5({ data }) {
         {logo && (
           <img src={logo} alt="logo" className="w-8 h-8 object-contain" />
         )}
-        <span className="text-[13px] font-bold text-gray-800">
+        <span
+          className="font-bold leading-tight uppercase text-black"
+          style={{ fontSize: "clamp(10px,1.6vw,12px)" }}
+        >
           {data?.institute?.name || "logoname"}
         </span>
       </div>
 
       {/* ===== WHITE CARD ===== */}
-      <div className="relative z-10 mt-[32px] mx-1  rounded-[22px] px-4 pt-4 pb-5">
+      <div className="relative z-10 mt-[40px] mx-1  rounded-[22px] px-4 pt-4 pb-5">
         {/* PHOTO */}
         <div className="flex justify-center mt-3">
-          <div className="w-[72px] h-[72px] rounded-[7px] bg-gray-100 overflow-hidden shadow">
+          <div className="w-[22mm] h-[27mm] rounded-[7px] bg-gray-100 overflow-hidden shadow border-black border-[2px]">
             {photo ? (
               <img
                 src={photo}
                 alt="student"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
             ) : (
               <div className="text-[9px] text-gray-400 flex items-center justify-center h-full">
@@ -64,7 +67,7 @@ export default function Design5({ data }) {
         {/* NAME */}
         <div className="text-center mt-2">
           <p
-            className="font-bold uppercase text-gray-800 whitespace-nowrap overflow-hidden leading-tight"
+            className="font-bold uppercase text-[#2563eb] whitespace-nowrap overflow-hidden leading-tight"
             style={{ fontSize: "clamp(7.5px, 1.6vw, 11px)" }}
           >
             {data?.studentName || "YOUR NAME"}
@@ -73,19 +76,21 @@ export default function Design5({ data }) {
         </div>
 
         {/* INFO */}
-        <div className="mt-2 text-[9.5px] text-gray-800 text-left space-y-[2px] ">
-          <p
-            className="leading-tight whitespace-nowrap overflow-hidden"
-            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
-          >
-            <b>Roll</b> : {data?.roll || "-"}
-          </p>
-          <p
-            className="leading-tight whitespace-nowrap overflow-hidden"
-            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
-          >
-            <b>ID No</b> : {data?.studentId || "-"}
-          </p>
+        <div className="mt-2 text-[9.5px] text-gray-800 text-left space-y-[2px] font-semibold">
+          <div className="flex justify-between">
+            <p
+              className="leading-tight whitespace-nowrap overflow-hidden"
+              style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+            >
+              <b>ID</b> : {data?.studentId || "-"}
+            </p>
+            <p
+              className="leading-tight whitespace-nowrap overflow-hidden"
+              style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+            >
+              <b>Roll</b> : {data?.roll || "-"}
+            </p>
+          </div>
           <p
             className="leading-tight whitespace-nowrap overflow-hidden"
             style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
@@ -141,7 +146,7 @@ export default function Design5({ data }) {
             className="h-7 mx-auto mb-[2px]"
           />
         )}
-        <p className="text-[9px] border-t font-semibold">Principal</p>
+        <p className="text-[9.5px] border-t font-semibold">Principal</p>
       </div>
 
       {/* ===== LEFT SIDE CURVES ===== */}

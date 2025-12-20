@@ -31,8 +31,8 @@ export default function Design6({ data }) {
         </p>
 
         {/* PHOTO */}
-        <div className="absolute left-1/2 -bottom-10 -translate-x-1/2 z-20">
-          <div className="w-[78px] h-[95px] rounded-[12px] bg-white border-[3px] border-green-500 overflow-hidden">
+        <div className="absolute left-1/2 -bottom-12 -translate-x-1/2 z-20">
+          <div className="w-[22mm] h-[27mm] rounded-[7px] bg-white border-[3px] border-green-500 overflow-hidden">
             {photo ? (
               <img
                 src={photo}
@@ -57,7 +57,7 @@ export default function Design6({ data }) {
       </svg>
 
       {/* ===== BODY ===== */}
-      <div className="pt-12 px-3 text-center">
+      <div className="pt-14 px-3 text-center">
         <p
           className="font-bold uppercase text-gray-800 whitespace-nowrap overflow-hidden leading-tight"
           style={{ fontSize: "clamp(7.5px, 1.6vw, 11px)" }}
@@ -65,19 +65,21 @@ export default function Design6({ data }) {
           {data?.studentName || "STUDENT NAME"}
         </p>
 
-        <div className="mt-2 text-[9.5px] text-gray-700 text-left space-y-[2px] ">
-          <p
-            className="leading-tight whitespace-nowrap overflow-hidden"
-            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
-          >
-            <b>Roll</b> : {data?.roll || "-"}
-          </p>
-          <p
-            className="leading-tight whitespace-nowrap overflow-hidden"
-            style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
-          >
-            <b>ID No</b> : {data?.studentId || "-"}
-          </p>
+        <div className="mt-2 text-[9.5px] text-gray-700 text-left space-y-[2px] font-semibold">
+          <div className="flex justify-between">
+            <p
+              className="leading-tight whitespace-nowrap overflow-hidden"
+              style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+            >
+              <b>ID</b> : {data?.institute.shortName + data?.studentId || "-"}
+            </p>
+            <p
+              className="leading-tight whitespace-nowrap overflow-hidden"
+              style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
+            >
+              <b>Roll</b> : {data?.roll || "-"}
+            </p>
+          </div>
           <p
             className="leading-tight whitespace-nowrap overflow-hidden"
             style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
