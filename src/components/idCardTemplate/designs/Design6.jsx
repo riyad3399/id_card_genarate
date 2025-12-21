@@ -1,3 +1,4 @@
+import { Droplet } from "lucide-react";
 import formatDOB from "../../helper/formatDOB";
 
 const baseUrl = "http://localhost:5000";
@@ -26,12 +27,12 @@ export default function Design6({ data }) {
           />
         )}
 
-        <p className="text-[11px] font-bold uppercase leading-tight">
+        <p className="text-[13px] font-bold uppercase leading-tight">
           {data?.institute?.name || "INSTITUTE NAME"}
         </p>
 
         {/* PHOTO */}
-        <div className="absolute left-1/2 -bottom-12 -translate-x-1/2 z-20">
+        <div className="absolute left-1/2 -bottom-13 -translate-x-1/2 z-20">
           <div className="w-[22mm] h-[27mm] rounded-[7px] bg-white border-[3px] border-green-500 overflow-hidden">
             {photo ? (
               <img
@@ -56,8 +57,20 @@ export default function Design6({ data }) {
         <path d="M0,25 C150,55 350,0 500,30 L500,0 L0,0 Z" fill="#22c55e" />
       </svg>
 
+      {/* ================= BLOOD GROUP ================= */}
+      {data?.bloodGroup && (
+        <div className="absolute top-[155px] left-4 z-10">
+          <div className="relative">
+            <Droplet size={26} className="fill-red-600 text-red-700" />
+            <span className="absolute inset-0 flex items-center justify-center text-[7px] font-semibold text-white top-2 ">
+              {data.bloodGroup}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* ===== BODY ===== */}
-      <div className="pt-14 px-3 text-center">
+      <div className="pt-15 px-3 text-center">
         <p
           className="font-bold uppercase text-gray-800 whitespace-nowrap overflow-hidden leading-tight"
           style={{ fontSize: "clamp(7.5px, 1.6vw, 11px)" }}
@@ -66,7 +79,7 @@ export default function Design6({ data }) {
         </p>
 
         <div className="mt-2 text-[9.5px] text-gray-700 text-left space-y-[2px] font-semibold">
-          <div className="flex justify-between">
+          <div className="flex gap-x-10">
             <p
               className="leading-tight whitespace-nowrap overflow-hidden"
               style={{ fontSize: "clamp(7.5px, 1.6vw, 10px)" }}
@@ -139,7 +152,7 @@ export default function Design6({ data }) {
       </div>
 
       {/* ===== BOTTOM BAR ===== */}
-      <div className="absolute bottom-0 left-0 w-full h-[14px] bg-green-500 flex items-center justify-center">
+      <div className="absolute bottom-0 left-0 w-full h-[16px] bg-green-500 flex items-center justify-center">
         <p className="text-[9px] text-white font-semibold">
           STUDENT IDENTITY CARD
         </p>

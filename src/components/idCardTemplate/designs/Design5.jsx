@@ -1,3 +1,4 @@
+import { Droplet } from "lucide-react";
 import formatDOB from "../../helper/formatDOB";
 
 const baseUrl = "http://localhost:5000";
@@ -63,6 +64,18 @@ export default function Design5({ data }) {
             )}
           </div>
         </div>
+
+        {/* ================= BLOOD GROUP ================= */}
+        {data?.bloodGroup && (
+          <div className="absolute top-[70px] left-4 z-10">
+            <div className="relative">
+              <Droplet size={26} className="fill-red-600 text-red-700" />
+              <span className="absolute inset-0 flex items-center justify-center text-[7px] font-semibold text-white top-2 ">
+                {data.bloodGroup}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* NAME */}
         <div className="text-center mt-2">

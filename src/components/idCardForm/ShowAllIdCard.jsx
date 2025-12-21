@@ -266,7 +266,7 @@ export default function ShowAllIdCard() {
 
       {/* PREVIEW */}
       {hasFiltered && filteredStudents.length > 0 && !showPrintable && (
-        <div className="grid grid-cols-6 gap-4">
+        <div className="grid md:grid-cols-5 sm:grid-cols-3 gap-4">
           {filteredStudents.map((std) => (
             <StudentIDCard
               key={std._id || std.id}

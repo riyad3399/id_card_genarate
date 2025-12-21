@@ -1,3 +1,4 @@
+import { Droplet } from "lucide-react";
 import formatDOB from "../../helper/formatDOB";
 
 const baseUrl = "http://localhost:5000";
@@ -28,15 +29,15 @@ export default function Design7({ data }) {
 
         {/* INSTITUTE NAME */}
         <p
-          className="font-bold leading-tight"
-          style={{ fontSize: "clamp(10px,1.6vw,12px)" }}
+          className="font-bold leading-tight uppercase"
+          style={{ fontSize: "clamp(10px,1.6vw,13.5px)" }}
         >
           {data?.institute?.name || "Your School and College Name"}
         </p>
 
         {/* PHOTO */}
-        <div className="absolute left-1/2 -bottom-10 -translate-x-1/2 z-20">
-          <div className="w-[22mm] h-[27mm] rounded-[7px] bg-white border-[3px] border-[#FFA500] overflow-hidden shadow-md">
+        <div className="absolute left-1/2 -bottom-11 -translate-x-1/2 z-20">
+          <div className="w-[22mm] h-[27mm] rounded-[7px] bg-white border-[3px] border-[#FFA500] overflow-hidden ">
             {photo ? (
               <img
                 src={photo}
@@ -77,11 +78,23 @@ export default function Design7({ data }) {
         />
       </svg>
 
+      {/* ================= BLOOD GROUP ================= */}
+      {data?.bloodGroup && (
+        <div className="absolute top-[160px] left-4 z-10">
+          <div className="relative">
+            <Droplet size={26} className="fill-red-600 text-red-700" />
+            <span className="absolute inset-0 flex items-center justify-center text-[7px] font-semibold text-white top-2 ">
+              {data.bloodGroup}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* ================= BODY ================= */}
-      <div className="pt-12 px-4 text-gray-800">
+      <div className="pt-13 px-4 text-gray-800">
         {/* STUDENT NAME */}
         <p
-          className="text-center font-bold text-[#4c1d95] whitespace-nowrap overflow-hidden leading-tight mb-2"
+          className="text-center font-bold text-[#4c1d95] whitespace-nowrap overflow-hidden leading-tight mb-2 uppercase"
           style={{ fontSize: "clamp(9px,1.6vw,11px)" }}
         >
           {data?.studentName || "Smith James"}

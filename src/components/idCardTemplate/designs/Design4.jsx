@@ -13,7 +13,7 @@ export default function Design4({ data }) {
     <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-400 font-sans">
       {/* ================= HEADER ================= */}
       <div className="relative h-[70px] text-white text-center px-2 pt-2">
-        <div className="  text-center z-10 absolute absolute-top-0 left-0 ">
+        <div className="  text-center z-10 absolute absolute-top-0 left-0 mt-1">
           <p
             className="font-bold leading-tight uppercase"
             style={{ fontSize: "clamp(10px,1.6vw,14px)" }}
@@ -111,7 +111,7 @@ export default function Design4({ data }) {
         <div className="absolute top-[130px] left-4 z-10">
           <div className="relative">
             <Droplet size={26} className="fill-red-600 text-red-700" />
-            <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-white top-2">
+            <span className="absolute inset-0 flex items-center justify-center text-[7px] font-semibold text-white top-2 ">
               {data.bloodGroup}
             </span>
           </div>
@@ -180,7 +180,7 @@ export default function Design4({ data }) {
       {/* ================= SIGNATURE ================= */}
       <div className="absolute bottom-[25px] right-4 text-center">
         {signature && (
-          <img src={signature} alt="sign" className="h-[26px] mx-auto" />
+          <img src={signature} alt="sign" className="h-[35px] object-cover" />
         )}
         <p className="text-[9.5px] border-t font-semibold">Principal</p>
       </div>
