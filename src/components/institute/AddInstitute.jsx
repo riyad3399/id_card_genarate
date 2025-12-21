@@ -253,7 +253,7 @@ export default function AddInstitute() {
 
           {/* ACTION */}
           <button
-            className={`btn btn-primary w-full text-lg ${
+            className={`btn bg-gradient-to-b from-sky-200 to-sky-600 text-white w-full text-lg ${
               loading ? "loading" : ""
             }`}
           >

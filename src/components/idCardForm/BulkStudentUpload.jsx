@@ -250,7 +250,7 @@ export default function BulkStudentUpload() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded bg-indigo-600 text-white hover:opacity-95 disabled:opacity-60"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded bg-gradient-to-b from-sky-200 to-sky-600 hover:opacity-95 disabled:opacity-60 text-white font-semibold"
           >
             <FileText size={16} />
             {loading ? `Uploading ${progress}%` : "Upload CSV"}

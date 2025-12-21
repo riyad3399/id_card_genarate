@@ -142,7 +142,7 @@ export default function ShowAllIdCard() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowPrintable((s) => !s)}
-            className="px-3 py-1 bg-indigo-600 text-white rounded"
+            className="px-3 py-1 text-white bg-gradient-to-b from-sky-200 to-sky-600 cursor-pointer rounded"
           >
             {showPrintable ? "Hide Printable" : "Show Printable"}
           </button>
@@ -236,7 +236,7 @@ export default function ShowAllIdCard() {
           <div className="col-span-2 flex gap-2">
             <button
               onClick={handleFilter}
-              className="btn btn-primary btn-sm w-[70%]"
+              className="btn bg-gradient-to-b from-sky-200 to-sky-600 text-white btn-sm w-[70%]"
             >
               Show
             </button>

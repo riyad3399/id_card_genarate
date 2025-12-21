@@ -1,6 +1,6 @@
 import  { useEffect, useState } from "react";
 import { InstituteBackCard } from "../idCardTemplate/StudentIDCard";
-export default function InstituteSelector({ fetchByEmail = false }) {
+export default function ShowIdCardBack({ fetchByEmail = false }) {
   const [institutes, setInstitutes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(false);
@@ -117,7 +117,7 @@ export default function InstituteSelector({ fetchByEmail = false }) {
                   setSelectedInstitute(first);
                 }
               }}
-              className="px-3 py-2 bg-indigo-600 text-white rounded"
+              className="px-3 py-2 bg-gradient-to-b from-sky-200 to-sky-600 text-white rounded"
             >
               Show
             </button>

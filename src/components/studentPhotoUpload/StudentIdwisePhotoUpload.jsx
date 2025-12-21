@@ -116,7 +116,7 @@ export default function StudentIdwisePhotoUpload() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium transition disabled:opacity-50"
+            className="mt-6 w-full bg-gradient-to-b from-sky-200 to-sky-600 text-white py-2.5 rounded-lg font-medium transition disabled:opacity-50"
           >
             {loading ? "Uploading photos..." : "Upload Photos"}
           </button>

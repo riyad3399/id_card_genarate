@@ -89,11 +89,6 @@ export default function SingleIdCardForm() {
   ];
   const shiftOptions = ["Morning", "Day", "Evening"];
 
-
-
-
-
-
   const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   };
@@ -136,7 +131,7 @@ export default function SingleIdCardForm() {
           try {
             URL.revokeObjectURL(photoPreview);
           } catch {
-
+            toast.error(" Failed to reset photo preview");
           }
         }
         setPhotoPreview(null);
@@ -156,9 +151,8 @@ export default function SingleIdCardForm() {
   const selectedInstitute =
     institutes.find((i) => i._id === form.institute) || {};
 
-  // preview data shape expected by StudentIDCard
   const previewData = {
-    // StudentIDCard uses fields like data.name, data.id, data.photo_url, data.institute.logo_url, etc.
+
     name: form.studentName || form.studentNameBn || "",
     id: form.studentId || "",
     roll: form.roll || "",
@@ -170,11 +164,9 @@ export default function SingleIdCardForm() {
     motherName: form.motherName || "",
     motherNameBn: form.motherNameBn || "",
     phone: form.mobileNumber || "",
-    // photo_url should be accessible by <img>; object URL works in browser preview
     photo_url: photoPreview || null,
     institute: {
       name: selectedInstitute.name || "",
-      // support multiple possible property names for logo/signature
       logo_url:
         selectedInstitute.logo_url ||
         selectedInstitute.logo ||
@@ -452,7 +444,6 @@ export default function SingleIdCardForm() {
                 onChange={handleChange}
                 className="input input-bordered w-full"
               >
-
                 {shiftOptions.map((shift, index) => (
                   <option key={index} value={shift}>
                     {shift}
@@ -510,7 +501,7 @@ export default function SingleIdCardForm() {
 
           <button
             disabled={loading}
-            className="btn btn-primary w-full"
+            className="btn bg-gradient-to-b from-sky-200 to-sky-600 text-white w-full"
             type="submit"
           >
             {loading ? (

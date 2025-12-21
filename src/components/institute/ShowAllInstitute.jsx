@@ -89,14 +89,14 @@ export default function ShowAllInstitute() {
                 )}
               </td>
               <td className="border space-x-2 pl-2">
-                <button className="btn btn-sm btn-primary">
-                  <Edit />
+                <button className="px-2 py-1 rounded-md text-white bg-gradient-to-b from-sky-200 to-sky-600">
+                  <Edit size={18}/>
                 </button>
                 <button
-                  className="btn btn-sm btn-error"
+                  className="px-2 py-1 rounded-md text-white bg-red-500"
                   onClick={() => handleDelete(item._id)}
                 >
-                  <Trash />
+                  <Trash size={18} />
                 </button>
               </td>
             </tr>
