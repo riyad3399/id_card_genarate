@@ -1,86 +1,47 @@
 /* eslint-disable no-undef */
 const Institute = require("../models/Institute");
+const uploadToImgbb = require("../utils/uploadToImgbb");
 
-const allowedTypes = ["school", "college", "university", "training_center"];
 
 const createInstitute = async (req, res) => {
   try {
-
-
-    const shortName = req.body.shortName || req.body.sohortName || null;
-
-    const typeRaw = typeof req.body.type === "string" ? req.body.type.trim() : "";
-    if (!typeRaw) {
-      return res.status(400).json({ message: "Field 'type' is required." });
-    }
-    if (!allowedTypes.includes(typeRaw)) {
-      return res.status(400).json({
-        message: "Invalid 'type'. Allowed: " + allowedTypes.join(", "),
-      });
-    }
-
     let logo = null;
     let signature = null;
-    if (req.files) {
-      if (req.files.logo && req.files.logo.length > 0) {
-        logo = `/uploads/logos/${req.files.logo[0].filename}`;
-      }
-      if (req.files.signature && req.files.signature.length > 0) {
-        signature = `/uploads/signature/${req.files.signature[0].filename}`;
-      }
+
+    // 🔥 LOGO upload
+    if (req.files?.logo?.[0]) {
+      logo = await uploadToImgbb(req.files.logo[0].buffer);
     }
-    if (req.file) {
-      if (req.file.fieldname === "logo") logo = `/uploads/logos/${req.file.filename}`;
-      if (req.file.fieldname === "signature")
-        signature = `/uploads/signature/${req.file.filename}`;
+
+    // 🔥 SIGNATURE upload
+    if (req.files?.signature?.[0]) {
+      signature = await uploadToImgbb(req.files.signature[0].buffer);
     }
 
     const payload = {
-      name: req.body.name ? String(req.body.name).trim() : undefined,
-      type: typeRaw,
-      address: req.body.address ? String(req.body.address).trim() : undefined,
-      contactEmail: req.body.contactEmail
-        ? String(req.body.contactEmail).trim().toLowerCase()
-        : undefined,
-      phone: req.body.phone ? String(req.body.phone).trim() : undefined,
-      eiin: req.body.eiin ? String(req.body.eiin).trim() : undefined,
-      estd: req.body.estd ? String(req.body.estd).trim() : undefined,
-      website: req.body.website ? String(req.body.website).trim() : undefined,
-      shortName: shortName ? String(shortName).trim() : undefined,
+      name: req.body.name?.trim(),
+      type: req.body.type?.trim(),
+      address: req.body.address?.trim(),
+      contactEmail: req.body.contactEmail?.trim().toLowerCase(),
+      phone: req.body.phone?.trim(),
+      eiin: req.body.eiin?.trim(),
+      website: req.body.website?.trim(),
+      shortName: req.body.shortName?.trim(),
       logo_url: logo,
       signature_url: signature,
     };
 
+    const institute = new Institute(payload);
+    await institute.save();
 
-    Object.keys(payload).forEach((k) => {
-      if (payload[k] === undefined) delete payload[k];
+    res.status(201).json({
+      message: "✅ Institute added successfully",
+      data: institute,
     });
-
-    const newInstitute = new Institute(payload);
-    await newInstitute.save();
-
-    return res
-      .status(201)
-      .json({ message: "✅ Institute added successfully", data: newInstitute });
   } catch (err) {
-    console.error("Create institute error (full):", err);
-
-    if (err.name === "ValidationError") {
-      const errors = Object.keys(err.errors).reduce((acc, key) => {
-        acc[key] = err.errors[key].message;
-        return acc;
-      }, {});
-      return res.status(400).json({ message: "Validation error", errors });
-    }
-
-    if (err.code === 11000) {
-      return res.status(400).json({ message: "Duplicate key error", keyValue: err.keyValue });
-    }
-
-    return res.status(500).json({ message: "Internal server error", error: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
-
 
 
 

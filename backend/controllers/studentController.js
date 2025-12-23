@@ -118,17 +118,14 @@ const createStudent = async (req, res) => {
   try {
     let photoUrl = null;
 
+    // ✅ buffer use
     if (req.files?.photo?.[0]) {
-      const localPath = req.files.photo[0].path.replace(/\\/g, "/");
-
-      photoUrl = await uploadToImgbb(localPath);
-
-      fs.unlink(req.files.photo[0].path, () => {});
+      photoUrl = await uploadToImgbb(req.files.photo[0].buffer);
     }
 
     const payload = normalizeStudentPayload({
       ...req.body,
-      photo_url: photoUrl, // ✅ IMPORTANT
+      photo_url: photoUrl, // ✅ imgbb URL
     });
 
     const newStudent = new Student(payload);
@@ -148,6 +145,7 @@ const createStudent = async (req, res) => {
     });
   }
 };
+
 
 
 

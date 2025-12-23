@@ -1,34 +1,41 @@
 /* eslint-disable no-undef */
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
+
 const {
   createInstitute,
   getInstitutes,
   deleteInstitute,
   getAllInstitutes,
   updatateInstitute,
-  getInstituteByEmail
+  getInstituteByEmail,
 } = require("../controllers/instituteController");
 
 const router = express.Router();
 
-// MULTER STORAGE
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (file.fieldname === "logo") {
-      cb(null, "uploads/logos");
-    } else if (file.fieldname === "signature") {
-      cb(null, "uploads/signature");
-    }
+/* ================================
+   MULTER (MEMORY STORAGE)
+   for imgbb upload
+================================ */
+const storage = multer.memoryStorage();
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2MB
   },
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + path.extname(file.originalname)),
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+    if (!allowed.includes(file.mimetype)) {
+      return cb(new Error("Only image files are allowed"));
+    }
+    cb(null, true);
+  },
 });
 
-const upload = multer({ storage });
-
-// ROUTES
+/* ================================
+   ROUTES
+================================ */
 router.post(
   "/add",
   upload.fields([
@@ -38,10 +45,11 @@ router.post(
   createInstitute
 );
 
+
 router.get("/", getInstitutes);
 router.get("/all", getAllInstitutes);
-router.delete("/:id", deleteInstitute);
-router.patch("/:id", updatateInstitute);
 router.get("/by-email", getInstituteByEmail);
+router.patch("/:id", updatateInstitute);
+router.delete("/:id", deleteInstitute);
 
 module.exports = router;
