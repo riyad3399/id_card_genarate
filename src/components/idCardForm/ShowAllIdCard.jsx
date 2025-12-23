@@ -90,7 +90,7 @@ export default function ShowAllIdCard() {
   /* ---------------- FETCH DATA ---------------- */
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/institutes")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/institutes`)
       .then((res) => res.json())
       .then((data) => setInstitutes(Array.isArray(data) ? data : []))
       .catch(() => {});
@@ -103,7 +103,7 @@ export default function ShowAllIdCard() {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:5000/api/students", {
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/students`, {
           signal: controller.signal,
         });
         const data = await res.json();

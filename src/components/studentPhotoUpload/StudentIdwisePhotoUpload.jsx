@@ -22,7 +22,7 @@ export default function StudentIdwisePhotoUpload() {
       setResult(null);
 
       const res = await fetch(
-        "http://localhost:5000/api/students/upload-photos-studentid",
+        `${import.meta.env.VITE_BASE_URL}/api/students/upload-photos-studentid`,
         {
           method: "POST",
           body: formData,

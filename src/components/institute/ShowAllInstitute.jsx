@@ -8,7 +8,7 @@ export default function ShowAllInstitute() {
   useEffect(() => {
     const fetchInstitute = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/institutes/all");
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/institutes/all`);
         const data = await res.json();
         setInstitutes(data);
         console.log("all institute", data);
@@ -26,7 +26,7 @@ export default function ShowAllInstitute() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/institutes/${id}`, {
+      await fetch(`${import.meta.env.VITE_BASE_URL}/api/institutes/${id}`, {
         method: "DELETE",
       });
       setInstitutes((prev) => prev.filter((item) => item._id !== id));

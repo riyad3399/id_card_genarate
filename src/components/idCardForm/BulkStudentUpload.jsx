@@ -25,7 +25,7 @@ export default function BulkStudentUpload() {
   const fileRef = useRef();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/institutes/all")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/institutes/all`)
       .then((r) => r.json())
       .then((d) => {
         // If your API returns {data: [...] } adjust accordingly
@@ -75,7 +75,7 @@ export default function BulkStudentUpload() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/students/add-multiple",
+        `${import.meta.env.VITE_BASE_URL}/api/students/add-multiple`,
         fd,
         {
           headers: {

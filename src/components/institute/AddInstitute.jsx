@@ -45,7 +45,7 @@ export default function AddInstitute() {
       if (logo) fd.append("logo", logo);
       if (signature) fd.append("signature", signature);
 
-      const res = await fetch("http://localhost:5000/api/institutes/add", {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/institutes/add`, {
         method: "POST",
         body: fd,
       });

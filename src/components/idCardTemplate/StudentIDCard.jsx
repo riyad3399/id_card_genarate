@@ -21,7 +21,7 @@ function StudentIDCard({ data, design = "design4" }) {
   const Card = DESIGN_MAP[design] || Design1;
   return <Card data={data} />;
 }
-const baseUrl = "http://localhost:5000";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 function fullUrl(path) {
   if (!path) return "";

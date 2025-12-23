@@ -41,7 +41,7 @@ export default function SingleIdCardForm() {
   const fileRef = useRef();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/institutes/all")
+    fetch(`${import.meta.env.VITE_BASE_URL}/api/institutes/all`)
       .then((r) => r.json())
       .then((d) => setInstitutes(d || []))
       .catch(() => setInstitutes([]));
@@ -118,7 +118,7 @@ export default function SingleIdCardForm() {
       });
       console.log(FD);
 
-      const res = await fetch("http://localhost:5000/api/students/add", {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/students/add`, {
         method: "POST",
         body: FD,
       });

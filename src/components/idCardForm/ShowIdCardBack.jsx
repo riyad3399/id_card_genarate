@@ -16,7 +16,7 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch("http://localhost:5000/api/institutes", {
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/institutes`, {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error(`Server responded ${res.status}`);
@@ -60,7 +60,7 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
     try {
       setLoadingDetail(true);
       const res = await fetch(
-        `http://localhost:5000/api/institutes/by-email?email=${encodeURIComponent(
+        `${import.meta.env.VITE_BASE_URL}/api/institutes/by-email?email=${encodeURIComponent(
           emailToUse
         )}`
       );
