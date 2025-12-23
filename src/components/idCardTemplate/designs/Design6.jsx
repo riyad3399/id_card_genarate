@@ -15,7 +15,7 @@ export default function Design6({ data }) {
   const signature = fullUrl(data?.institute?.signature_url);
 
   return (
-    <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 font-sans">
+    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 font-sans">
       {/* ===== TOP DARK AREA ===== */}
       <div className="relative h-[40%] bg-[#2e2e2e] text-center text-white px-3 pt-2">
         {/* Logo */}
@@ -33,7 +33,7 @@ export default function Design6({ data }) {
 
         {/* PHOTO */}
         <div className="absolute left-1/2 -bottom-13 -translate-x-1/2 z-20">
-          <div className="w-[22mm] h-[27mm] rounded-[7px] bg-white border-[3px] border-green-500 overflow-hidden">
+          <div className="w-[80px] h-[99px] rounded-[7px] bg-white border-[3px] border-green-500 overflow-hidden">
             {photo ? (
               <img
                 src={photo}

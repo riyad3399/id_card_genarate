@@ -15,7 +15,7 @@ export default function Design7({ data }) {
   const signature = fullUrl(data?.institute?.signature_url);
 
   return (
-    <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 font-sans">
+    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 font-sans">
       {/* ================= TOP PURPLE HEADER ================= */}
       <div className="relative h-[42%] bg-gradient-to-r from-[#4c1d95] to-[#2f4fa2] text-center text-white px-3 pt-2">
         {/* LOGO */}
@@ -37,7 +37,7 @@ export default function Design7({ data }) {
 
         {/* PHOTO */}
         <div className="absolute left-1/2 -bottom-11 -translate-x-1/2 z-20">
-          <div className="w-[22mm] h-[27mm] rounded-[7px] bg-white border-[3px] border-[#FFA500] overflow-hidden ">
+          <div className="w-[80px] h-[99px] rounded-[7px] bg-white border-[3px] border-[#FFA500] overflow-hidden ">
             {photo ? (
               <img
                 src={photo}
@@ -141,7 +141,7 @@ export default function Design7({ data }) {
       </div>
 
       {/* ================= BOTTOM BAR ================= */}
-      <div className="absolute bottom-0 w-full h-[20px] bg-gradient-to-r from-[#4c1d95] to-[#2f4fa2] flex items-center justify-center">
+      <div className="absolute bottom-0 w-full h-[18px] bg-gradient-to-r from-[#4c1d95] to-[#2f4fa2] flex items-center justify-center">
         <p className="text-[9px] text-white font-semibold">
           Student Identity Card
         </p>

@@ -15,17 +15,33 @@ const {
 /* ================================
    MULTER - MEMORY (STUDENT PHOTO)
 ================================ */
+const MIN_SIZE = 20 * 1024; 
+const MAX_SIZE = 80 * 1024; 
+
 const photoUpload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
-    const allowed = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+    const allowed = ["image/jpeg", "image/jpg", "image/png"];
     if (!allowed.includes(file.mimetype)) {
-      return cb(new Error("Only image files are allowed"));
+      return cb(new Error("Only JPG / PNG images are allowed"));
     }
     cb(null, true);
   },
 });
+
+const validatePhotoSize = (req, res, next) => {
+  const file = req.files?.photo?.[0] || req.file;
+  if (!file) return next();
+
+  if (file.size < MIN_SIZE) {
+    return res.status(400).json({
+      message: "Photo size too small. Minimum 20 KB required.",
+    });
+  }
+
+  next();
+};
+
 
 /* ================================
    MULTER - DISK (CSV)
@@ -59,6 +75,7 @@ const uploadCSV = multer({
 router.post(
   "/add",
   photoUpload.fields([{ name: "photo", maxCount: 1 }]),
+  validatePhotoSize,
   createStudent
 );
 
@@ -68,9 +85,14 @@ router.post("/add-multiple", uploadCSV.single("file"), bulkCreateStudents);
 // ✅ UPLOAD STUDENT PHOTOS BY STUDENT ID
 router.post(
   "/upload-photos-studentid",
+  (req, res, next) => {
+    console.log("🔥 ROUTE HIT: upload-photos-studentid");
+    next();
+  },
   photoUpload.array("photos", 20),
   uploadStudentPhotosByStudentId
 );
+
 
 // ✅ GET ALL STUDENTS
 router.get("/", getStudents);

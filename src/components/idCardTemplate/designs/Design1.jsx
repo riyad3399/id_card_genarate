@@ -70,14 +70,18 @@ console.log(data);
         </div>
 
         {/* Institute Name */}
-        <p className="relative z-10 pt-2 px-3 text-[13.5px] font-bold text-white text-center uppercase">
+        <p className="relative z-10 pt-3 px-3 text-[13.7px] font-bold text-[#ffff] text-center uppercase">
           {data?.institute?.name || "Institute Name"}
         </p>
       </div>
 
       <div className="w-10 h-10 rounded-full  bg-white absolute top-[62px] left-3 flex items-center justify-center overflow-hidden  border-gray-300 shadow-md">
         {logo ? (
-          <img src={fullUrl(logo)} alt="logo" className="w-full h-full object-cover" />
+          <img
+            src={fullUrl(logo)}
+            alt="logo"
+            className="w-full h-full object-cover"
+          />
         ) : (
           <span className="text-[9px]">LOGO</span>
         )}
@@ -85,7 +89,7 @@ console.log(data);
 
       {/* ===== Photo ===== */}
       <div className="relative flex justify-center mt-[-28px]">
-        <div className="w-[22mm] h-[27mm] rounded-[7px] border-[3px] border-b-emerald-300/50 border-r-emerald-300/50 border-s-indigo-300/50 border-t-indigo-300/50 bg-gray-100 overflow-hidden">
+        <div className="w-[80px] h-[99px] rounded-[7px] border-[3px] border-b-emerald-300/50 border-r-emerald-300/50 border-s-indigo-300/50 border-t-indigo-300/50 bg-gray-100 overflow-hidden">
           {photo ? (
             <img
               src={fullUrl(photo)}
@@ -162,7 +166,7 @@ console.log(data);
         ) : (
           <div className="text-[9px] text-gray-400">Signature</div>
         )}
-        <p className="text-[9px] font-semibold border-t">Headmaster</p>
+        <p className="text-[9px] font-semibold border-t">Principal</p>
       </div>
 
       {/* ===== Footer ===== */}

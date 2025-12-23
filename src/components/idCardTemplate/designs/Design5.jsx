@@ -15,7 +15,7 @@ export default function Design5({ data }) {
   const signature = fullUrl(data?.institute?.signature_url);
 
   return (
-    <div className="relative w-[58mm] h-[90mm] bg-[#eaf4ff] overflow-hidden border border-gray-300 font-sans">
+    <div className="relative w-[57mm] h-[89mm] bg-[#eaf4ff] overflow-hidden border border-gray-300 font-sans">
       {/* ===== TOP RIGHT CURVES ===== */}
       <svg
         className="absolute top-0 right-0 w-[80%] h-[40%]"
@@ -50,7 +50,7 @@ export default function Design5({ data }) {
       <div className="relative z-10 mt-[40px] mx-1  rounded-[22px] px-4 pt-4 pb-5">
         {/* PHOTO */}
         <div className="flex justify-center mt-3">
-          <div className="w-[22mm] h-[27mm] rounded-[7px] bg-gray-100 overflow-hidden shadow border-black border-[2px]">
+          <div className="w-[80px] h-[99px] rounded-[7px] bg-gray-100 overflow-hidden shadow border-black border-[2px]">
             {photo ? (
               <img
                 src={photo}

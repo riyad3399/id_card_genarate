@@ -14,7 +14,7 @@ export default function Design2({ data }) {
   const signature = fullUrl(data?.institute?.signature_url);
 
   return (
-    <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 shadow-xl print:avoid-break-inside">
+    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 shadow-xl print:avoid-break-inside">
       {/* ===== LEFT COLOR STRIP ===== */}
       <div className="absolute left-0 top-0 h-full w-[6mm] bg-gradient-to-b from-emerald-600 to-teal-500" />
 
@@ -40,7 +40,7 @@ export default function Design2({ data }) {
 
       {/* ===== PHOTO ===== */}
       <div className="flex justify-center mt-2 ml-[6mm] relative">
-        <div className="w-[90px] h-[100px] border-[3px] rounded-[7px] border-emerald-600 bg-white overflow-hidden">
+        <div className="w-[80px] h-[99px] border-[3px] rounded-[7px] border-emerald-600 bg-white overflow-hidden">
           {photo ? (
             <img
               src={photo}

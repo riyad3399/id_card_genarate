@@ -5,6 +5,9 @@ const path = require("path");
 const Student = require("../models/Student");
 const Institute = require("../models/Institute");
 const uploadToImgbb = require("../utils/uploadToImgbb");
+const processStudentPhoto = require("../utils/processStudentPhoto");
+
+const MAX_SIZE = 80 * 1024; // 80 KB
 
 
 const normalizeStudentPayload = (payload) => {
@@ -118,14 +121,23 @@ const createStudent = async (req, res) => {
   try {
     let photoUrl = null;
 
-    // ✅ buffer use
-    if (req.files?.photo?.[0]) {
-      photoUrl = await uploadToImgbb(req.files.photo[0].buffer);
+    const file = req.files?.photo?.[0];
+    console.log("FILES:", file);
+
+    if (file) {
+      let buffer = file.buffer;
+
+      // 🔥 auto resize + compress if > 80 KB
+      if (buffer.length > 80 * 1024) {
+        buffer = await processStudentPhoto(buffer);
+      }
+
+      photoUrl = await uploadToImgbb(buffer);
     }
 
     const payload = normalizeStudentPayload({
       ...req.body,
-      photo_url: photoUrl, // ✅ imgbb URL
+      photo_url: photoUrl,
     });
 
     const newStudent = new Student(payload);
@@ -145,7 +157,6 @@ const createStudent = async (req, res) => {
     });
   }
 };
-
 
 
 
@@ -270,22 +281,20 @@ const bulkCreateStudents = async (req, res) => {
 
 // upload students photo by studentId
 const uploadStudentPhotosByStudentId = async (req, res) => {
-  try {
-    if (!req.files || !req.files.length) {
-      return res.status(400).json({ ok: false, message: "No photos uploaded" });
-    }
+  console.log("🔥 NEW BUFFER CONTROLLER RUNNING");
 
+  try {
     if (!req.files || !req.files.length) {
       return res.status(400).json({
         ok: false,
-        message: "No photos received",
+        message: "No photos uploaded",
       });
     }
-
 
     const results = [];
 
     for (const file of req.files) {
+      // 🔹 filename = studentId.jpg
       const ext = path.extname(file.originalname);
       const studentId = path.basename(file.originalname, ext);
 
@@ -294,18 +303,31 @@ const uploadStudentPhotosByStudentId = async (req, res) => {
       if (!student) {
         results.push({
           file: file.originalname,
+          studentId,
           status: "student not found",
         });
         continue;
       }
 
-      student.photo_url = `/uploads/students/${file.filename}`;
+      let buffer = file.buffer;
+
+      // 🔥 auto resize + compress if > 80 KB
+      if (buffer.length > MAX_SIZE) {
+        buffer = await processStudentPhoto(buffer);
+      }
+
+      // ☁️ upload to imgbb
+      const photoUrl = await uploadToImgbb(buffer);
+
+      // 💾 save same as single student
+      student.photo_url = photoUrl;
       await student.save();
 
       results.push({
         file: file.originalname,
         studentId,
         status: "uploaded",
+        photo_url: photoUrl,
       });
     }
 
@@ -315,7 +337,7 @@ const uploadStudentPhotosByStudentId = async (req, res) => {
       results,
     });
   } catch (err) {
-    console.error(err);
+    console.error("uploadStudentPhotosByStudentId error:", err);
     return res.status(500).json({
       ok: false,
       message: "Server error",
@@ -323,6 +345,7 @@ const uploadStudentPhotosByStudentId = async (req, res) => {
     });
   }
 };
+
 
 
 const getStudents = async (req, res) => {

@@ -15,7 +15,7 @@ export default function Design3({ data }) {
 
 
   return (
-    <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 font-sans">
+    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 font-sans">
       {/* ===== BACKGROUND BLOBS ===== */}
       <div className="absolute -top-6 -left-6 w-20 h-20 bg-orange-400 rounded-full opacity-80" />
       <div className="absolute top-12 -right-6 w-20 h-20 bg-green-400 rounded-full opacity-80" />
@@ -43,7 +43,7 @@ export default function Design3({ data }) {
 
         {/* PHOTO */}
         <div className="mt-2 flex justify-center">
-          <div className="w-[70px] h-[86px] bg-white border-[3px] border-orange-400 flex items-center justify-center rounded-[7px]">
+          <div className="w-[80px] h-[99px] bg-white border-[3px] border-orange-400 flex items-center justify-center rounded-[7px]">
             {photo ? (
               <img
                 src={photo}

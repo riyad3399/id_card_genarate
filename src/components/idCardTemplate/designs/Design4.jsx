@@ -10,7 +10,7 @@ export default function Design4({ data }) {
   const signature = fullUrl(data?.institute?.signature_url);
 
   return (
-    <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-400 font-sans">
+    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-400 font-sans">
       {/* ================= HEADER ================= */}
       <div className="relative h-[70px] text-white text-center px-2 pt-2">
         <div className="  text-center z-10 absolute absolute-top-0 left-0 mt-1">
@@ -120,7 +120,7 @@ export default function Design4({ data }) {
 
       {/* ================= PHOTO ================= */}
       <div className="flex justify-center mt-[8px]">
-        <div className="w-[22mm] h-[27mm] border-[3px] border-[#2f4fa3] bg-white rounded-[7px] overflow-hidden shadow-md">
+        <div className="w-[80px] h-[99px] border-[3px] border-[#2f4fa3] bg-white rounded-[7px] overflow-hidden shadow-md">
           {photo ? (
             <img
               src={photo}
