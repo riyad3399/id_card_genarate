@@ -88,7 +88,7 @@ console.log(data);
         <div className="w-[22mm] h-[27mm] rounded-[7px] border-[3px] border-b-emerald-300/50 border-r-emerald-300/50 border-s-indigo-300/50 border-t-indigo-300/50 bg-gray-100 overflow-hidden">
           {photo ? (
             <img
-              src={photo}
+              src={fullUrl(photo)}
               alt="student"
               className="w-full h-full object-cover"
             />
