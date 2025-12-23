@@ -143,43 +143,26 @@ function InstituteBackCard({
 
 function IDCardPrintableSheet({
   students = [],
-  perRow = 2,
+  perRow = 3,
   theme = "light",
   showBack = false,
   design = "design1",
 }) {
-  const cols = Math.max(1, parseInt(String(perRow), 10) || 1);
-
   return (
-    <div className="p-2 print:p-0" style={{ fontFamily: "Arial, sans-serif" }}>
-    
-
-      <div
-        className="grid gap-4"
-        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
-      >
+    <div className="a4-root" style={{ fontFamily: "Arial, sans-serif" }}>
+      <div className="a4-grid">
         {students.map((s, idx) => {
-          const key = s && (s._id || s.id) ? s._id || s.id : `student-${idx}`;
+          const key = s?._id || s?.id || idx;
 
           return (
-            <div
-              key={key}
-              className="flex items-center justify-center"
-              style={{
-                breakInside: "avoid",
-                WebkitColumnBreakInside: "avoid",
-                pageBreakInside: "avoid",
-              }}
-            >
-              <div className="transform scale-100 print:scale-100">
-                <StudentIDCard
-                  data={s}
-                  design={design}
-                  theme={theme}
-                  showQR={!showBack}
-                  showBarcode={false}
-                />
-              </div>
+            <div key={key} className="card-slot">
+              <StudentIDCard
+                data={s}
+                design={design}
+                theme={theme}
+                showQR={!showBack}
+                showBarcode={false}
+              />
             </div>
           );
         })}
@@ -187,6 +170,10 @@ function IDCardPrintableSheet({
     </div>
   );
 }
+
+
+
+
 
 
 export { StudentIDCard, InstituteBackCard, IDCardPrintableSheet };
