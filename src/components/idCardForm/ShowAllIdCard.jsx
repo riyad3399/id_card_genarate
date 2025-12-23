@@ -20,18 +20,18 @@ const ID_CARD_DESIGNS = [
 ];
 
 export default function ShowAllIdCard() {
-  const getUniqueValues = (arr, key) => {
-    return [...new Set(arr.map((i) => i?.[key]).filter(Boolean))];
-  };
+  const getUniqueValues = (arr, key) => [
+    ...new Set(arr.map((i) => i?.[key]).filter(Boolean)),
+  ];
 
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
+  const [printStudents, setPrintStudents] = useState([]); // 🔥 print-only
   const [institutes, setInstitutes] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showPrintable, setShowPrintable] = useState(false);
   const [hasFiltered, setHasFiltered] = useState(false);
+  const [showPrintable, setShowPrintable] = useState(false);
 
   const [selectedDesign, setSelectedDesign] = useState("design1");
 
@@ -44,71 +44,98 @@ export default function ShowAllIdCard() {
 
   const printRef = useRef(null);
 
+  /* ---------------- PRINT HANDLER ---------------- */
+
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: "Student-ID-Cards",
   });
 
-  /* ---------- fetch institutes ---------- */
+  /* -------- IMG URL → BASE64 (PRINT SAFE) -------- */
+
+  const convertToBase64 = async (url) => {
+    const res = await fetch(url, { mode: "cors" });
+    const blob = await res.blob();
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const prepareStudentsForPrint = async () => {
+    const prepared = await Promise.all(
+      filteredStudents.map(async (s) => {
+        if (!s.photo_url) return s;
+
+        try {
+          const base64 = await convertToBase64(s.photo_url);
+          return {
+            ...s,
+            photo: base64, // 🔥 print time image
+          };
+        } catch {
+          return s;
+        }
+      })
+    );
+
+    setPrintStudents(prepared);
+
+    // print after DOM update
+    setTimeout(() => handlePrint(), 300);
+  };
+
+  /* ---------------- FETCH DATA ---------------- */
+
   useEffect(() => {
     fetch("http://localhost:5000/api/institutes")
       .then((res) => res.json())
-      .then((data) => {
-        setInstitutes(Array.isArray(data) ? data : []);
-      })
+      .then((data) => setInstitutes(Array.isArray(data) ? data : []))
       .catch(() => {});
   }, []);
 
-  /* ---------- fetch students ---------- */
   useEffect(() => {
     let mounted = true;
     const controller = new AbortController();
 
-    const getAllStudents = async () => {
+    const load = async () => {
       setLoading(true);
-      setError(null);
       try {
         const res = await fetch("http://localhost:5000/api/students", {
           signal: controller.signal,
         });
-        if (!res.ok) throw new Error(`Server responded ${res.status}`);
         const data = await res.json();
         if (mounted) setStudents(Array.isArray(data) ? data : []);
-      } catch (err) {
-        if (mounted) setError(err.message || "Failed to load students");
       } finally {
         if (mounted) setLoading(false);
       }
     };
 
-    getAllStudents();
+    load();
     return () => {
       mounted = false;
       controller.abort();
     };
   }, []);
 
-  /* ---------- filter handlers ---------- */
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((p) => ({ ...p, [name]: value }));
-  };
+  /* ---------------- FILTER ---------------- */
+
+  const handleFilterChange = (e) =>
+    setFilters((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const handleFilter = () => {
     let result = [...students];
 
-    if (filters.instituteId) {
+    if (filters.instituteId)
       result = result.filter((s) => s?.institute?._id === filters.instituteId);
-    }
-    if (filters.className) {
+    if (filters.className)
       result = result.filter((s) => s?.className === filters.className);
-    }
-    if (filters.section) {
+    if (filters.section)
       result = result.filter((s) => s?.section === filters.section);
-    }
-    if (filters.groupName) {
+    if (filters.groupName)
       result = result.filter((s) => s?.groupName === filters.groupName);
-    }
 
     setFilteredStudents(result);
     setHasFiltered(true);
@@ -133,6 +160,8 @@ export default function ShowAllIdCard() {
   const sectionOptions = getUniqueValues(baseStudents, "section");
   const groupOptions = getUniqueValues(baseStudents, "groupName");
 
+  /* ---------------- UI ---------------- */
+
   return (
     <div className="p-4 space-y-4">
       {/* HEADER */}
@@ -142,25 +171,24 @@ export default function ShowAllIdCard() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowPrintable((s) => !s)}
-            className="px-3 py-1 text-white bg-gradient-to-b from-sky-200 to-sky-600 cursor-pointer rounded"
+            className="px-3 py-1 text-white bg-gradient-to-b from-sky-200 to-sky-600 rounded"
           >
             {showPrintable ? "Hide Printable" : "Show Printable"}
           </button>
 
           <button
-            onClick={handlePrint}
+            onClick={prepareStudentsForPrint}
             disabled={!hasFiltered || filteredStudents.length === 0}
             className="px-3 py-1 bg-green-600 text-white rounded disabled:opacity-50"
           >
-            🖨 Print
+            🖨 Print (Illustrator Safe)
           </button>
         </div>
       </div>
 
-      {/* FILTER + DESIGN BAR */}
+      {/* FILTER BAR */}
       <div className="bg-white border rounded-xl p-4 shadow-sm">
         <div className="grid grid-cols-12 gap-3 items-end">
-          {/* Institute */}
           <select
             name="instituteId"
             value={filters.instituteId}
@@ -168,14 +196,13 @@ export default function ShowAllIdCard() {
             className="select select-bordered col-span-3"
           >
             <option value="">Select Institute</option>
-            {institutes.map((inst) => (
-              <option key={inst._id} value={inst._id}>
-                {inst.name}
+            {institutes.map((i) => (
+              <option key={i._id} value={i._id}>
+                {i.name}
               </option>
             ))}
           </select>
 
-          {/* Class */}
           <select
             name="className"
             value={filters.className}
@@ -183,14 +210,11 @@ export default function ShowAllIdCard() {
             className="select select-bordered col-span-2"
           >
             <option value="">All Classes</option>
-            {classOptions.map((cls) => (
-              <option key={cls} value={cls}>
-                {cls}
-              </option>
+            {classOptions.map((c) => (
+              <option key={c}>{c}</option>
             ))}
           </select>
 
-          {/* Section */}
           <select
             name="section"
             value={filters.section}
@@ -198,14 +222,11 @@ export default function ShowAllIdCard() {
             className="select select-bordered col-span-2"
           >
             <option value="">All Sections</option>
-            {sectionOptions.map((sec) => (
-              <option key={sec} value={sec}>
-                {sec}
-              </option>
+            {sectionOptions.map((s) => (
+              <option key={s}>{s}</option>
             ))}
           </select>
 
-          {/* Group */}
           <select
             name="groupName"
             value={filters.groupName}
@@ -213,22 +234,19 @@ export default function ShowAllIdCard() {
             className="select select-bordered col-span-2"
           >
             <option value="">All Groups</option>
-            {groupOptions.map((grp) => (
-              <option key={grp} value={grp}>
-                {grp}
-              </option>
+            {groupOptions.map((g) => (
+              <option key={g}>{g}</option>
             ))}
           </select>
 
-          {/* DESIGN SELECT */}
           <select
             value={selectedDesign}
             onChange={(e) => setSelectedDesign(e.target.value)}
             className="select select-bordered col-span-1"
           >
-            {ID_CARD_DESIGNS.map((design) => (
-              <option key={design.key} value={design.key}>
-                {design.label}
+            {ID_CARD_DESIGNS.map((d) => (
+              <option key={d.key} value={d.key}>
+                {d.label}
               </option>
             ))}
           </select>
@@ -236,13 +254,13 @@ export default function ShowAllIdCard() {
           <div className="col-span-2 flex gap-2">
             <button
               onClick={handleFilter}
-              className="btn bg-gradient-to-b from-sky-200 to-sky-600 text-white btn-sm w-[70%]"
+              className="btn btn-sm bg-sky-600 text-white w-[70%]"
             >
               Show
             </button>
             <button
               onClick={resetFilter}
-              className="btn btn-outline btn-sm w-[30%]"
+              className="btn btn-sm btn-outline w-[30%]"
             >
               Reset
             </button>
@@ -250,38 +268,22 @@ export default function ShowAllIdCard() {
         </div>
       </div>
 
-      {/* MESSAGE BEFORE FILTER */}
-      {!hasFiltered && !loading && (
-        <div className="text-sm text-slate-500 text-center">
-          🔍 Please select filter and click <b>Show</b> to view ID cards
-        </div>
-      )}
-
-      {/* NO RESULT */}
-      {hasFiltered && filteredStudents.length === 0 && (
-        <div className="text-sm text-slate-600 text-center">
-          No students found for selected filter.
-        </div>
-      )}
-
       {/* PREVIEW */}
       {hasFiltered && filteredStudents.length > 0 && !showPrintable && (
         <div className="grid md:grid-cols-5 sm:grid-cols-3 gap-4">
-          {filteredStudents.map((std) => (
-            <StudentIDCard
-              key={std._id || std.id}
-              data={std}
-              design={selectedDesign}
-            />
+          {filteredStudents.map((s) => (
+            <StudentIDCard key={s._id} data={s} design={selectedDesign} />
           ))}
         </div>
       )}
 
-      {/* PRINT AREA */}
+      
+
+      {/* PRINT AREA (HIDDEN) */}
       <div className="hidden">
-        <div ref={printRef}>
+        <div ref={printRef} clsassName="pdf-safe">
           <IDCardPrintableSheet
-            students={filteredStudents}
+            students={printStudents}
             design={selectedDesign}
             perRow={3}
             showBack={false}

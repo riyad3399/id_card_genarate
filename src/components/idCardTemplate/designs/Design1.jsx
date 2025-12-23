@@ -10,12 +10,16 @@ function fullUrl(path) {
 }
 
 export default function Design1({ data }) {
-  const logo = fullUrl(data?.institute?.logo_url);
-  const photo = fullUrl(data?.photo_url);
-  const signature = fullUrl(data?.institute?.signature_url);
+const photo = data?.photo_url; 
+const logo = data?.institute?.logo_url;       
+  const signature = data?.institute?.signature_url; 
+  
+  console.log("photo url ", photo);
+
+console.log(data);
 
   return (
-    <div className="relative w-[58mm] h-[90mm] bg-white overflow-hidden border border-gray-300 ">
+    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 ">
       {/* ===== Top Header ===== */}
       <div className="relative h-[28mm]">
         {/* ===== WAVE SVG HEADER ===== */}
@@ -34,8 +38,8 @@ export default function Design1({ data }) {
                 x2="100%"
                 y2="50%"
               >
-                <stop offset="5%" stopColor="#00d084" />
-                <stop offset="95%" stopColor="#2e64ed" />
+                <stop offset="5%" stopColor="#00d195" />
+                <stop offset="95%" stopColor="#2e64fd" />
               </linearGradient>
             </defs>
 
@@ -66,14 +70,14 @@ export default function Design1({ data }) {
         </div>
 
         {/* Institute Name */}
-        <p className="relative z-10 pt-2 px-3 text-[14px] font-bold text-white text-center uppercase">
+        <p className="relative z-10 pt-2 px-3 text-[13.5px] font-bold text-white text-center uppercase">
           {data?.institute?.name || "Institute Name"}
         </p>
       </div>
 
       <div className="w-10 h-10 rounded-full  bg-white absolute top-[62px] left-3 flex items-center justify-center overflow-hidden  border-gray-300 shadow-md">
         {logo ? (
-          <img src={logo} alt="logo" className="w-full h-full object-cover" />
+          <img src={fullUrl(logo)} alt="logo" className="w-full h-full object-cover" />
         ) : (
           <span className="text-[9px]">LOGO</span>
         )}
@@ -154,7 +158,7 @@ export default function Design1({ data }) {
       {/* ===== Signature ===== */}
       <div className="absolute bottom-6 right-3 text-center">
         {signature ? (
-          <img src={signature} alt="sign" className="h-10 mx-auto" />
+          <img src={fullUrl(signature)} alt="sign" className="h-10 mx-auto" />
         ) : (
           <div className="text-[9px] text-gray-400">Signature</div>
         )}
@@ -162,7 +166,7 @@ export default function Design1({ data }) {
       </div>
 
       {/* ===== Footer ===== */}
-      <div className="absolute bottom-0 w-full h-5 bg-gradient-to-r from-[#2e64ed]  to-[#00d084] flex items-center justify-center">
+      <div className="absolute bottom-0 w-full h-5 bg-gradient-to-r from-[#2e64fd]  to-[#00d195] flex items-center justify-center">
         <p className="text-[9px] text-white">Student Identity Card</p>
       </div>
     </div>

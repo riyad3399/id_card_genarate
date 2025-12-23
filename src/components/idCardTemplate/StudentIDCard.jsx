@@ -152,6 +152,8 @@ function IDCardPrintableSheet({
 
   return (
     <div className="p-2 print:p-0" style={{ fontFamily: "Arial, sans-serif" }}>
+    
+
       <div
         className="grid gap-4"
         style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
@@ -170,7 +172,6 @@ function IDCardPrintableSheet({
               }}
             >
               <div className="transform scale-100 print:scale-100">
-                {/* FRONT CARD */}
                 <StudentIDCard
                   data={s}
                   design={design}
@@ -183,20 +184,9 @@ function IDCardPrintableSheet({
           );
         })}
       </div>
-
-      <style>{`
-        @media print {
-          body {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          .no-print {
-            display: none;
-          }
-        }
-      `}</style>
     </div>
   );
 }
+
 
 export { StudentIDCard, InstituteBackCard, IDCardPrintableSheet };

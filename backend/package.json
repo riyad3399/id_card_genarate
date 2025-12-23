@@ -12,10 +12,12 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "csvtojson": "^2.0.14",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "form-data": "^4.0.5",
     "mongodb": "^7.0.0",
     "mongoose": "^8.19.3",
     "multer": "^2.0.2"

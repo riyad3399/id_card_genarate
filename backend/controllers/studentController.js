@@ -4,6 +4,7 @@ const csv = require("csvtojson");
 const path = require("path");
 const Student = require("../models/Student");
 const Institute = require("../models/Institute");
+const uploadToImgbb = require("../utils/uploadToImgbb");
 
 
 const normalizeStudentPayload = (payload) => {
@@ -115,27 +116,20 @@ function mapRowToStudentObject(row) {
 // Create single student
 const createStudent = async (req, res) => {
   try {
-    const photo = req.files?.photo
-      ? `/uploads/students/${req.files.photo[0].filename}`
-      : null;
+    let photoUrl = null;
+
+    if (req.files?.photo?.[0]) {
+      const localPath = req.files.photo[0].path.replace(/\\/g, "/");
+
+      photoUrl = await uploadToImgbb(localPath);
+
+      fs.unlink(req.files.photo[0].path, () => {});
+    }
 
     const payload = normalizeStudentPayload({
       ...req.body,
-      photo_url: photo,
+      photo_url: photoUrl, // ✅ IMPORTANT
     });
-
-    // required validation
-    if (!payload.studentId) {
-      return res
-        .status(400)
-        .json({ ok: false, message: "studentId is required" });
-    }
-
-    if (!payload.studentName) {
-      return res
-        .status(400)
-        .json({ ok: false, message: "studentName is required" });
-    }
 
     const newStudent = new Student(payload);
     await newStudent.save();
@@ -147,14 +141,6 @@ const createStudent = async (req, res) => {
     });
   } catch (err) {
     console.error("createStudent error:", err);
-
-    if (err.code === 11000) {
-      return res.status(409).json({
-        ok: false,
-        message: "Student already exists (duplicate studentId)",
-      });
-    }
-
     return res.status(500).json({
       ok: false,
       message: "Server error",
@@ -162,6 +148,7 @@ const createStudent = async (req, res) => {
     });
   }
 };
+
 
 
 // Bulk create students from CSV
@@ -341,11 +328,34 @@ const uploadStudentPhotosByStudentId = async (req, res) => {
 
 
 const getStudents = async (req, res) => {
-  const data = await Student.find()
-    .populate("institute")
-    .sort({ createdAt: -1 });
-  res.json(data);
+  try {
+    const students = await Student.find()
+      .populate("institute")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const data = students.map((s) => ({
+      ...s,
+
+      // ✅ student photo URL (imgbb)
+      photo: s.photo || null,
+
+      institute: s.institute
+        ? {
+            ...s.institute,
+            logo: s.institute.logo || null, // imgbb url
+            signature: s.institute.signature || null, // imgbb url
+          }
+        : null,
+    }));
+
+    res.json(data);
+  } catch (err) {
+    console.error("getStudents error:", err);
+    res.status(500).json({ message: "Failed to load students" });
+  }
 };
+
 
 const getAllStudents = async (req, res) => {
   const data = await Student.find().populate("institute");

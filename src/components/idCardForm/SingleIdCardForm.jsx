@@ -116,6 +116,7 @@ export default function SingleIdCardForm() {
       Object.entries(form).forEach(([k, v]) => {
         if (v) FD.append(k, v);
       });
+      console.log(FD);
 
       const res = await fetch("http://localhost:5000/api/students/add", {
         method: "POST",
@@ -152,7 +153,6 @@ export default function SingleIdCardForm() {
     institutes.find((i) => i._id === form.institute) || {};
 
   const previewData = {
-
     name: form.studentName || form.studentNameBn || "",
     id: form.studentId || "",
     roll: form.roll || "",
@@ -164,7 +164,7 @@ export default function SingleIdCardForm() {
     motherName: form.motherName || "",
     motherNameBn: form.motherNameBn || "",
     phone: form.mobileNumber || "",
-    photo_url: photoPreview || null,
+    photo: photoPreview || null,
     institute: {
       name: selectedInstitute.name || "",
       logo_url:

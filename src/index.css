@@ -1,6 +1,25 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+/* ===== PDF SAFE MODE ===== */
+.pdf-safe *,
+.pdf-safe {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: #cccccc !important;
+
+  /* remove tailwind effects that cause OKLCH */
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* disable gradients */
+.pdf-safe [class*="bg-gradient"],
+.pdf-safe svg {
+  fill: #ffffff !important;
+  background: #ffffff !important;
+}
+
 @media print {
   @page {
     size: A4;
