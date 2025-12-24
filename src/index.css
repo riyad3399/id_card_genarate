@@ -1,11 +1,8 @@
 @import "tailwindcss";
 @plugin "daisyui";
-
-/* ===== PDF SAFE MODE ===== */
-.idcard-card {
-  width: 58mm;
-  height: 90mm;
-}
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
 
 
 @media print {

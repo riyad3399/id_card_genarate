@@ -53,6 +53,8 @@ export default function StudentIdwisePhotoUpload() {
     }
   };
 
+
+
   /* =========================
      UI
   ========================== */

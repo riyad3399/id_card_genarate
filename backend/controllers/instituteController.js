@@ -25,6 +25,7 @@ const createInstitute = async (req, res) => {
       contactEmail: req.body.contactEmail?.trim().toLowerCase(),
       phone: req.body.phone?.trim(),
       eiin: req.body.eiin?.trim(),
+      estd: req.body.estd?.trim(),
       website: req.body.website?.trim(),
       shortName: req.body.shortName?.trim(),
       logo_url: logo,

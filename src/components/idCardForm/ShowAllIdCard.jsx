@@ -281,7 +281,7 @@ export default function ShowAllIdCard() {
 
       {/* PRINT AREA (HIDDEN) */}
       <div className="hidden">
-        <div ref={printRef} clsassName="pdf-safe">
+        <div ref={printRef} >
           <IDCardPrintableSheet
             students={printStudents}
             design={selectedDesign}

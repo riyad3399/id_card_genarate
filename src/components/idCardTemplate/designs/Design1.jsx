@@ -19,7 +19,10 @@ const logo = data?.institute?.logo_url;
 console.log(data);
 
   return (
-    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 ">
+    <div
+      className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 "
+      style={{ fontFamily: "Poppins, Inter, sans-serif" }}
+    >
       {/* ===== Top Header ===== */}
       <div className="relative h-[28mm]">
         {/* ===== WAVE SVG HEADER ===== */}
@@ -75,7 +78,7 @@ console.log(data);
         </p>
       </div>
 
-      <div className="w-10 h-10 rounded-full  bg-white absolute top-[62px] left-3 flex items-center justify-center overflow-hidden  border-gray-300 shadow-md">
+      <div className="w-10 h-10 rounded-md  bg-white absolute top-[62px] left-3 flex items-center justify-center overflow-hidden  border-gray-300 shadow-md">
         {logo ? (
           <img
             src={fullUrl(logo)}

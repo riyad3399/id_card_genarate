@@ -86,7 +86,6 @@ router.post("/add-multiple", uploadCSV.single("file"), bulkCreateStudents);
 router.post(
   "/upload-photos-studentid",
   (req, res, next) => {
-    console.log("🔥 ROUTE HIT: upload-photos-studentid");
     next();
   },
   photoUpload.array("photos", 20),

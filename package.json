@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/hind-siliguri": "^5.2.7",
+    "@fontsource/poppins": "^5.2.7",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
     "html2canvas": "^1.4.1",

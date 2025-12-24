@@ -36,6 +36,7 @@ function InstituteBackCard({
   className = "",
 }) {
   const isDark = theme === "dark";
+  console.log(institute);
 
   const logo = fullUrl(institute.logo_url);
   const name = (institute.name || "INSTITUTE NAME").toString();
@@ -128,7 +129,7 @@ function InstituteBackCard({
       </div>
 
       {/* ===== EMERGENCY CONTACT ===== */}
-      <div className="mt-3 w-full px-3 font-semibold">
+      <div className=" w-full px-3 font-semibold">
         <div className="text-[10px] font-semibold mt-1">Emergency Contact</div>
         <div className="text-[11px] font-mono break-words">{emergency}</div>
       </div>
@@ -149,13 +150,13 @@ function IDCardPrintableSheet({
   design = "design1",
 }) {
   return (
-    <div className="a4-root" style={{ fontFamily: "Arial, sans-serif" }}>
-      <div className="a4-grid">
+    <div className="" style={{ fontFamily: "Arial, sans-serif" }}>
+      <div className="">
         {students.map((s, idx) => {
           const key = s?._id || s?.id || idx;
 
           return (
-            <div key={key} className="card-slot">
+            <div key={key} className="grid grid-cols-3 gap-4 mb-4">
               <StudentIDCard
                 data={s}
                 design={design}

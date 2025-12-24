@@ -38,6 +38,7 @@ export default function AddInstitute() {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+    
 
     try {
       const fd = new FormData();
