@@ -19,10 +19,7 @@ const logo = data?.institute?.logo_url;
 console.log(data);
 
   return (
-    <div
-      className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 "
-      style={{ fontFamily: "Poppins, Inter, sans-serif" }}
-    >
+    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden ">
       {/* ===== Top Header ===== */}
       <div className="relative h-[28mm]">
         {/* ===== WAVE SVG HEADER ===== */}
@@ -73,12 +70,12 @@ console.log(data);
         </div>
 
         {/* Institute Name */}
-        <p className="relative z-10 pt-3 px-3 text-[13.7px] font-bold text-[#ffff] text-center uppercase">
+        <p className="relative z-10 pt-3 px-[10px] text-[14px] font-extrabold text-[#ffff] text-center uppercase">
           {data?.institute?.name || "Institute Name"}
         </p>
       </div>
 
-      <div className="w-10 h-10 rounded-md  bg-white absolute top-[62px] left-3 flex items-center justify-center overflow-hidden  border-gray-300 shadow-md">
+      <div className="w-10 h-10 rounded-md  bg-white absolute top-[62px] left-[13px] flex items-center justify-center overflow-hidden  border-gray-300 shadow-md">
         {logo ? (
           <img
             src={fullUrl(logo)}
@@ -127,15 +124,15 @@ console.log(data);
       <div className="pt-2 px-4 text-gray-800">
         {/* STUDENT NAME */}
         <p
-          className="text-center font-bold text-emerald-500 whitespace-nowrap overflow-hidden leading-tight mb-2 uppercase"
+          className="text-center font-bold text-[#2e64fd] whitespace-nowrap overflow-hidden leading-tight mb-2 uppercase"
           style={{ fontSize: "clamp(9px,1.6vw,11px)" }}
         >
-          {data?.studentName || "Smith James"}
+          {data?.studentName || "Student Name"}
         </p>
 
         {/* INFO LIST */}
         <div className=" text-[9.5px]">
-          <div className="grid grid-cols-[28%_5%_1fr] items-start text-[9.5px] font-bold">
+          <div className="grid grid-cols-[22%_3%_1fr] items-start text-[9.5px] font-bold">
             <span>ID</span>
             <span>:</span>
             <span
@@ -158,7 +155,11 @@ console.log(data);
 
           {data?.dob && <Info label="D.O.B" value={formatDOB(data?.dob)} />}
 
-          <Info label="Phone" value={data?.mobileNumber || "-"} />
+          {data?.mobileNumber !== "0" ? (
+            <Info label="Phone" value={0 + data?.mobileNumber} />
+          ) : (
+            <Info label="Phone" value={0} />
+          )}
         </div>
       </div>
 
@@ -174,7 +175,9 @@ console.log(data);
 
       {/* ===== Footer ===== */}
       <div className="absolute bottom-0 w-full h-5 bg-gradient-to-r from-[#2e64fd]  to-[#00d195] flex items-center justify-center">
-        <p className="text-[9px] text-white">Student Identity Card</p>
+        <p className="text-[9.2px] text-white font-bold">
+          Student Identity Card
+        </p>
       </div>
     </div>
   );
@@ -183,9 +186,9 @@ console.log(data);
 /* ================= INFO ROW ================= */
 function Info({ label, value }) {
   return (
-    <div className="grid grid-cols-[28%_5%_1fr] items-start">
+    <div className="grid grid-cols-[22%_3%_1fr] items-start">
       <span className="font-bold">{label}</span>
-      <span>:</span>
+      <span className="font-bold">:</span>
       <span
         className="whitespace-nowrap overflow-hidden font-bold"
         style={{ fontSize: "clamp(7.5px,1.5vw,9.5px)" }}

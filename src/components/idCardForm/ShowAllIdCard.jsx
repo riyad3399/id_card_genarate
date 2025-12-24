@@ -14,9 +14,7 @@ const ID_CARD_DESIGNS = [
   { key: "design5", label: "Design-5" },
   { key: "design6", label: "Design-6" },
   { key: "design7", label: "Design-7" },
-  { key: "design8", label: "Design-8" },
-  { key: "design9", label: "Design-9" },
-  { key: "design10", label: "Design-10" },
+  
 ];
 
 export default function ShowAllIdCard() {
@@ -277,11 +275,9 @@ export default function ShowAllIdCard() {
         </div>
       )}
 
-      
-
       {/* PRINT AREA (HIDDEN) */}
-      <div className="hidden">
-        <div ref={printRef} >
+      <div className="print-only">
+        <div ref={printRef}>
           <IDCardPrintableSheet
             students={printStudents}
             design={selectedDesign}

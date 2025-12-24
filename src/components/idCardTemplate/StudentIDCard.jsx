@@ -51,10 +51,9 @@ function InstituteBackCard({
   return (
     <div
       className={`
-        w-[58mm] h-[90mm]
+        w-[57mm] h-[89mm]
         rounded-[8px]
         
-        shadow
         flex flex-col
         items-center
         text-center
@@ -94,9 +93,7 @@ function InstituteBackCard({
 
       {/* ===== CONTACT TITLE ===== */}
       <div className="mt-2 w-full">
-        <div
-          className="text-[13px] tracking-tight font-bold uppercase italic"
-        >
+        <div className="text-[13px] tracking-tight font-bold uppercase italic">
           contact address
         </div>
         <div className="mx-8 mt-[2px] h-[1px] bg-current opacity-80" />
@@ -120,22 +117,19 @@ function InstituteBackCard({
       </div>
 
       {/* ===== ADDRESS & DETAILS ===== */}
-      <div className="px-3 mt-1 text-[10px] leading-[12px] space-y-[2px] font-semibold">
+      <div className="px-3 mt-[6px] text-[10px] leading-[12px] space-y-[3px] font-semibold">
         <p className="break-words line-clamp-3">{address}</p>
         <p>
           EIIN: {eiin} &nbsp;|&nbsp; Estd: {estd}
         </p>
-        <p className="break-all">Website: {"www." + website}</p>
+        <p>Phone: { emergency}</p>
+        <p className="break-all font-semibold">Website: {"www." + website}</p>
       </div>
 
-      {/* ===== EMERGENCY CONTACT ===== */}
-      <div className=" w-full px-3 font-semibold">
-        <div className="text-[10px] font-semibold mt-1">Emergency Contact</div>
-        <div className="text-[11px] font-mono break-words">{emergency}</div>
-      </div>
+     
 
       {/* ===== FOOTER ===== */}
-      <div className="mt-1 w-full border-t-[2px] pt-[3px] text-[8.5px] font-semibold">
+      <div className="mt-3 w-full border-t-[2px] pt-[3px] text-[8.5px] font-semibold">
         Powered by: <b>Saibon Soft</b>
       </div>
     </div>
@@ -144,33 +138,29 @@ function InstituteBackCard({
 
 function IDCardPrintableSheet({
   students = [],
-  perRow = 3,
   theme = "light",
   showBack = false,
   design = "design1",
 }) {
   return (
-    <div className="" style={{ fontFamily: "Arial, sans-serif" }}>
-      <div className="">
-        {students.map((s, idx) => {
-          const key = s?._id || s?.id || idx;
-
-          return (
-            <div key={key} className="grid grid-cols-3 gap-4 mb-4">
-              <StudentIDCard
-                data={s}
-                design={design}
-                theme={theme}
-                showQR={!showBack}
-                showBarcode={false}
-              />
-            </div>
-          );
-        })}
+    <div className="print-sheet">
+      <div className="print-grid">
+        {students.map((s, idx) => (
+          <div key={idx} className="card-wrap">
+            <StudentIDCard
+              data={s}
+              design={design}
+              theme={theme}
+              showQR={!showBack}
+              showBarcode={false}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
 }
+
 
 
 

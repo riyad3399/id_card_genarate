@@ -17,4 +17,60 @@
   }
 }
 
+@media print {
+  @page {
+    size: A4;
+    margin: 4mm;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* পুরো A4 */
+  .print-sheet {
+    width: 210mm;
+  }
+
+  /* 🔥 3×3 GRID – এখানে magic */
+  .print-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: repeat(3, auto);
+    gap: 4mm;
+  }
+
+  /* card wrapper */
+  .card-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* 🔥 প্রতি 9টা পর page break */
+  .card-wrap:nth-child(9n) {
+    page-break-after: always;
+  }
+
+  /* ❗ StudentIDCard যদি width:100% নেয়, force fix */
+  .card-wrap > * {
+    width: 63mm !important;
+    height: 90mm !important;
+  }
+}
+
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  .print-only {
+    display: block;
+  }
+}
+
 

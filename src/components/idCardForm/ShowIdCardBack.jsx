@@ -1,5 +1,7 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import { InstituteBackCard } from "../idCardTemplate/StudentIDCard";
+
 export default function ShowIdCardBack({ fetchByEmail = false }) {
   const [institutes, setInstitutes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -8,6 +10,10 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
   const [selectedId, setSelectedId] = useState("");
   const [selectedInstitute, setSelectedInstitute] = useState(null);
 
+  // 🔑 print ref (must always exist)
+  const printRef = useRef(null);
+
+  /* ================= LOAD INSTITUTES ================= */
   useEffect(() => {
     let mounted = true;
     const controller = new AbortController();
@@ -16,11 +22,15 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/institutes`, {
-          signal: controller.signal,
-        });
+
+        const res = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/institutes`,
+          { signal: controller.signal }
+        );
+
         if (!res.ok) throw new Error(`Server responded ${res.status}`);
         const data = await res.json();
+
         if (!mounted) return;
         setInstitutes(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -37,6 +47,7 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
     };
   }, []);
 
+  /* ================= SELECT HANDLER ================= */
   const handleSelect = async (e) => {
     const idOrEmail = e.target.value;
     setSelectedId(idOrEmail);
@@ -53,16 +64,15 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
       return;
     }
 
-
     let emailToUse = idOrEmail;
-    if (local && local.contactEmail) emailToUse = local.contactEmail;
+    if (local?.contactEmail) emailToUse = local.contactEmail;
 
     try {
       setLoadingDetail(true);
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/institutes/by-email?email=${encodeURIComponent(
-          emailToUse
-        )}`
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/api/institutes/by-email?email=${encodeURIComponent(emailToUse)}`
       );
       if (!res.ok) throw new Error(`Server responded ${res.status}`);
       const data = await res.json();
@@ -75,6 +85,12 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
     }
   };
 
+  /* ================= REACT TO PRINT (v3+) ================= */
+  const handlePrint = useReactToPrint({
+    contentRef: printRef, // 🔥 correct way (v3+)
+    documentTitle: "Institute-ID-Back",
+  });
+
   return (
     <div className="p-4">
       <h2 className="text-lg font-semibold mb-3">Select Institute</h2>
@@ -85,7 +101,8 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
         <div className="text-sm text-red-600">Error: {error}</div>
       ) : (
         <>
-          <div className="mb-4 flex items-center gap-2">
+          {/* ===== CONTROLS (SCREEN ONLY) ===== */}
+          <div className="mb-4 flex items-center gap-2 no-print">
             <select
               value={selectedId}
               onChange={handleSelect}
@@ -95,10 +112,11 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
               {institutes.map((ins) => {
                 const value = ins._id || ins.id || ins.contactEmail || "";
                 const label = ins.name
-                  ? `${ins.name} ${
-                      ins.contactEmail ? `(${ins.contactEmail})` : ""
+                  ? `${ins.name}${
+                      ins.contactEmail ? ` (${ins.contactEmail})` : ""
                     }`
-                  : ins.contactEmail || value;
+                  : value;
+
                 return (
                   <option key={value} value={value}>
                     {label}
@@ -121,36 +139,46 @@ export default function ShowIdCardBack({ fetchByEmail = false }) {
             >
               Show
             </button>
+
+            <button
+              onClick={handlePrint}
+              disabled={!selectedInstitute}
+              className="px-3 py-2 bg-gradient-to-b from-emerald-400 to-emerald-600
+                         text-white rounded disabled:opacity-50"
+            >
+              Print
+            </button>
           </div>
 
-          <div>
-            {loadingDetail ? (
-              <div className="text-sm text-slate-600">Loading institute…</div>
-            ) : selectedInstitute ? (
-              <InstituteBackCard
-                institute={{
-                  name: selectedInstitute.name,
-                  logo_url: selectedInstitute.logo_url,
-                  eiin: selectedInstitute.eiin,
-                  estd: selectedInstitute.estd,
-                  website: selectedInstitute.website,
-                  address: selectedInstitute.address,
-                  phone: selectedInstitute.phone,
-                }}
-                contact={{
-                  address: selectedInstitute.address,
-                  phone: selectedInstitute.phone,
-                  emergency:
-                    selectedInstitute.emergency || selectedInstitute.phone,
-                }}
-                theme="light"
-              />
-            ) : (
-              <div className="text-sm text-slate-500">
-                No institute selected.
-              </div>
-            )}
+          {/* ===== PRINT CONTENT (ALWAYS MOUNTED) ===== */}
+          <div style={{ display: selectedInstitute ? "block" : "none" }}>
+            <div ref={printRef} className="print-area">
+              {selectedInstitute && (
+                <InstituteBackCard
+                  institute={{
+                    name: selectedInstitute.name,
+                    logo_url: selectedInstitute.logo_url,
+                    eiin: selectedInstitute.eiin,
+                    estd: selectedInstitute.estd,
+                    website: selectedInstitute.website,
+                    address: selectedInstitute.address,
+                    phone: selectedInstitute.phone,
+                  }}
+                  contact={{
+                    address: selectedInstitute.address,
+                    phone: selectedInstitute.phone,
+                    emergency:
+                      selectedInstitute.emergency || selectedInstitute.phone,
+                  }}
+                  theme="light"
+                />
+              )}
+            </div>
           </div>
+
+          {loadingDetail && (
+            <div className="text-sm text-slate-600">Loading institute…</div>
+          )}
         </>
       )}
     </div>
