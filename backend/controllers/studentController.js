@@ -6,6 +6,9 @@ const Student = require("../models/Student");
 const Institute = require("../models/Institute");
 const uploadToImgbb = require("../utils/uploadToImgbb");
 const processStudentPhoto = require("../utils/processStudentPhoto");
+const pLimit = require("p-limit");
+const limit = pLimit(5);
+
 
 const MAX_SIZE = 80 * 1024; // 80 KB
 
@@ -281,55 +284,67 @@ const bulkCreateStudents = async (req, res) => {
 
 // upload students photo by studentId
 const uploadStudentPhotosByStudentId = async (req, res) => {
-  console.log("🔥 NEW BUFFER CONTROLLER RUNNING");
+  console.log("🔥 OPTIMIZED BUFFER CONTROLLER RUNNING");
 
   try {
-    if (!req.files || !req.files.length) {
+    if (!req.files?.length) {
       return res.status(400).json({
         ok: false,
         message: "No photos uploaded",
       });
     }
 
-    const results = [];
+    // 🔹 extract all studentIds
+    const studentIds = req.files.map((file) =>
+      path.basename(file.originalname, path.extname(file.originalname))
+    );
 
-    for (const file of req.files) {
-      // 🔹 filename = studentId.jpg
-      const ext = path.extname(file.originalname);
-      const studentId = path.basename(file.originalname, ext);
+    // 🔹 fetch all students in ONE query
+    const students = await Student.find(
+      { studentId: { $in: studentIds } },
+      { studentId: 1 }
+    );
 
-      const student = await Student.findOne({ studentId });
+    const studentMap = new Map();
+    students.forEach((s) => studentMap.set(s.studentId, true));
 
-      if (!student) {
-        results.push({
+    // 🔥 parallel upload with limit
+    const tasks = req.files.map((file) =>
+      limit(async () => {
+        const ext = path.extname(file.originalname);
+        const studentId = path.basename(file.originalname, ext);
+
+        if (!studentMap.has(studentId)) {
+          return {
+            file: file.originalname,
+            studentId,
+            status: "student not found",
+          };
+        }
+
+        let buffer = file.buffer;
+
+        if (buffer.length > MAX_SIZE) {
+          buffer = await processStudentPhoto(buffer);
+        }
+
+        const photoUrl = await uploadToImgbb(buffer);
+
+        await Student.updateOne(
+          { studentId },
+          { $set: { photo_url: photoUrl } }
+        );
+
+        return {
           file: file.originalname,
           studentId,
-          status: "student not found",
-        });
-        continue;
-      }
+          status: "uploaded",
+          photo_url: photoUrl,
+        };
+      })
+    );
 
-      let buffer = file.buffer;
-
-      // 🔥 auto resize + compress if > 80 KB
-      if (buffer.length > MAX_SIZE) {
-        buffer = await processStudentPhoto(buffer);
-      }
-
-      // ☁️ upload to imgbb
-      const photoUrl = await uploadToImgbb(buffer);
-
-      // 💾 save same as single student
-      student.photo_url = photoUrl;
-      await student.save();
-
-      results.push({
-        file: file.originalname,
-        studentId,
-        status: "uploaded",
-        photo_url: photoUrl,
-      });
-    }
+    const results = await Promise.all(tasks);
 
     return res.json({
       ok: true,
@@ -359,7 +374,7 @@ const getStudents = async (req, res) => {
       ...s,
 
       // ✅ student photo URL (imgbb)
-      photo: s.photo || null,
+      photo: s.photo_url || null,
 
       institute: s.institute
         ? {
@@ -393,6 +408,65 @@ const updateStudent = async (req, res) => {
   res.json({ message: "Updated successfully" });
 };
 
+const getClassesByInstitute = async (req, res) => {
+  try {
+    const instituteId = req.params.id;
+
+    const classes = await Student.distinct("className", {
+      institute: instituteId,
+    });
+
+    res.json(classes.filter(Boolean));
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+const getGroupsByClass = async (req, res) => {
+  try {
+    const { className } = req.params;
+    const { instituteId } = req.query;
+
+    if (!className) {
+      return res.status(400).json({ message: "className required" });
+    }
+
+    const query = { className };
+    if (instituteId) query.institute = instituteId;
+
+    const groups = await Student.distinct("groupName", query);
+
+    res.json(groups.filter((g) => g && g.trim()));
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+
+const getSectionsByClassAndGroup = async (req, res) => {
+  try {
+    const className = req.params.id;
+    const groupName = req.query.group;
+
+    if (!groupName) {
+      return res.status(400).json({ message: "group query required" });
+    }
+
+    const sections = await Student.distinct("section", {
+      className: className,
+      groupName: groupName,
+    });
+
+    res.json(sections.filter(Boolean));
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+
 module.exports = {
   createStudent,
   getStudents,
@@ -401,4 +475,7 @@ module.exports = {
   updateStudent,
   bulkCreateStudents,
   uploadStudentPhotosByStudentId,
+  getClassesByInstitute,
+  getGroupsByClass,
+  getSectionsByClassAndGroup,
 };

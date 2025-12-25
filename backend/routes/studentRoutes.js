@@ -10,6 +10,9 @@ const {
   getStudents,
   bulkCreateStudents,
   uploadStudentPhotosByStudentId,
+  getClassesByInstitute,
+  getGroupsByClass,
+  getSectionsByClassAndGroup,
 } = require("../controllers/studentController");
 
 /* ================================
@@ -85,15 +88,22 @@ router.post("/add-multiple", uploadCSV.single("file"), bulkCreateStudents);
 // ✅ UPLOAD STUDENT PHOTOS BY STUDENT ID
 router.post(
   "/upload-photos-studentid",
-  (req, res, next) => {
-    next();
-  },
   photoUpload.array("photos", 20),
   uploadStudentPhotosByStudentId
 );
 
 
+
 // ✅ GET ALL STUDENTS
 router.get("/", getStudents);
+
+/* ===== CLASS ===== */
+router.get("/institutes/:id/classes", getClassesByInstitute);
+
+/* ===== GROUP ===== */
+router.get("/classes/:className/groups", getGroupsByClass);
+
+/* ===== SECTION ===== */
+router.get("/classes/:id/sections", getSectionsByClassAndGroup);
 
 module.exports = router;
