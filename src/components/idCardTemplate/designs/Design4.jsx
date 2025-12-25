@@ -10,12 +10,12 @@ export default function Design4({ data }) {
   const signature = fullUrl(data?.institute?.signature_url);
 
   return (
-    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-400 font-sans">
+    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden">
       {/* ================= HEADER ================= */}
       <div className="relative h-[70px] text-white text-center px-2 pt-2">
         <div className="  text-center z-10 absolute absolute-top-0 left-0 mt-1">
           <p
-            className="font-bold leading-tight uppercase"
+            className="font-extrabold leading-tight uppercase"
             style={{ fontSize: "clamp(10px,1.6vw,14px)" }}
           >
             {data?.institute?.name || "Your Institute Name"}
@@ -38,7 +38,7 @@ export default function Design4({ data }) {
         >
           <defs>
             <linearGradient id="gradient" x1="1%" y1="58%" x2="99%" y2="42%">
-              <stop offset="5%" stop-color="#2f4fb5"></stop>
+              <stop offset="5%" stop-color="#243d80"></stop>
               <stop offset="95%" stop-color="#2f4fa3"></stop>
             </linearGradient>
           </defs>
@@ -53,7 +53,7 @@ export default function Design4({ data }) {
           ></path>
           <defs>
             <linearGradient id="gradient" x1="1%" y1="58%" x2="99%" y2="42%">
-              <stop offset="5%" stop-color="#2f4fb5"></stop>
+              <stop offset="5%" stop-color="#243d80"></stop>
               <stop offset="95%" stop-color="#2f4fa3"></stop>
             </linearGradient>
           </defs>
@@ -100,7 +100,7 @@ export default function Design4({ data }) {
       </div>
 
       {/* ================= LOGO ================= */}
-      <div className="absolute top-[78px] left-3 w-[38px] h-[38px] bg-white rounded-full shadow">
+      <div className="w-10 h-10 rounded-md  bg-white absolute top-[68px] left-[13px] flex items-center justify-center overflow-hidden  border-gray-300 shadow-md">
         {logo && (
           <img src={logo} alt="logo" className="w-full h-full object-contain" />
         )}
@@ -111,32 +111,48 @@ export default function Design4({ data }) {
         <div className="absolute top-[130px] left-4 z-10">
           <div className="relative">
             <Droplet size={26} className="fill-red-600 text-red-700" />
-            <span className="absolute inset-0 flex items-center justify-center text-[7px] font-semibold text-white top-2 ">
+            <span className="absolute inset-0 flex items-center justify-center text-[7px] font-semibold text-white top-[6px] ">
               {data.bloodGroup}
             </span>
           </div>
         </div>
       )}
 
-      {/* ================= PHOTO ================= */}
-      <div className="flex justify-center mt-[8px]">
-        <div className="w-[80px] h-[99px] border-[3px] border-[#2f4fa3] bg-white rounded-[7px] overflow-hidden shadow-md">
+      {/* ===== Photo ===== */}
+      <div className="relative flex justify-center -mt-[-8px]">
+        <div className="w-[80px] h-[99px] rounded-[7px] border-[3px] border-[#243d80] bg-gray-100 overflow-hidden">
           {photo ? (
             <img
-              src={photo}
+              src={fullUrl(photo)}
               alt="student"
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover"
             />
           ) : (
-            <div className="flex items-center justify-center h-full text-[9px] text-gray-400">
+            <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400">
               No Photo
             </div>
           )}
         </div>
+
+        {/* Blood Group */}
+        {data?.bloodGroup && (
+          <div className="absolute left-4 top-12 z-10">
+            <div className="relative">
+              <Droplet
+                size={27}
+                className="fill-red-600 text-red-700 drop-shadow-lg"
+                strokeWidth={1.5}
+              />
+              <span className="absolute inset-0 flex items-center top-1 justify-center text-[7.5px] font-semibold text-white">
+                {data.bloodGroup}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ================= BODY ================= */}
-      <div className="pt-1 px-4 text-gray-800">
+      <div className="pt-2 px-4 text-gray-800">
         {/* STUDENT NAME */}
         <p
           className="text-center font-bold text-[#4c1d95] whitespace-nowrap overflow-hidden leading-tight mb-2 uppercase"
@@ -147,7 +163,7 @@ export default function Design4({ data }) {
 
         {/* body */}
         <div className=" text-[9.5px] ">
-          <div className="grid grid-cols-[28%_5%_1fr] items-start text-[9.5px] font-bold">
+          <div className="grid grid-cols-[21%_3%_1fr] items-start text-[9.5px] font-bold">
             <span>ID</span>
             <span>:</span>
             <span
@@ -173,7 +189,7 @@ export default function Design4({ data }) {
 
           {data?.dob && <Info label="D.O.B" value={formatDOB(data?.dob)} />}
 
-          <Info label="Phone" value={data?.mobileNumber || "-"} />
+          <Info label="Phone" value={0 + data?.mobileNumber || "-"} />
         </div>
       </div>
 
@@ -187,7 +203,7 @@ export default function Design4({ data }) {
 
       {/* ================= FOOTER ================= */}
       <div className="absolute bottom-0 w-full h-[20px] bg-gradient-to-r from-[#2f4fb8] to-[#2f4fa2] flex items-center justify-center">
-        <p className="text-[9px] text-white font-semibold">
+        <p className="text-[9.2px] text-white font-bold">
           Student Identity Card
         </p>
       </div>
@@ -199,11 +215,11 @@ export default function Design4({ data }) {
 /* ================= INFO ROW ================= */
 function Info({ label, value }) {
   return (
-    <div className="grid grid-cols-[28%_5%_1fr] items-start font-bold">
+    <div className="grid grid-cols-[21%_3%_1fr] items-start">
       <span className="font-bold">{label}</span>
-      <span>:</span>
+      <span className="font-bold">:</span>
       <span
-        className="whitespace-nowrap overflow-hidden"
+        className="whitespace-nowrap overflow-hidden font-bold"
         style={{ fontSize: "clamp(7.5px,1.5vw,9.5px)" }}
       >
         {value}
