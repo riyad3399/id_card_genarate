@@ -21,7 +21,7 @@ const studentSchema = new mongoose.Schema(
     bloodGroup: { type: String },
     religion: { type: String },
 
-    gender: { type: String, enum: ["Male", "Female"] },
+    gender: { type: String,  },
 
     className: { type: String },
     section: { type: String },

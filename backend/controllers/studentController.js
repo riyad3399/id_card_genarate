@@ -165,6 +165,10 @@ const createStudent = async (req, res) => {
 
 // Bulk create students from CSV
 const bulkCreateStudents = async (req, res) => {
+  console.log("Controller hit");
+  console.log("file:", req.file);
+
+
   try {
     if (!req.file) {
       return res

@@ -14,6 +14,7 @@ const ID_CARD_DESIGNS = [
   { key: "design5", label: "Design-5" },
   { key: "design6", label: "Design-6" },
   { key: "design7", label: "Design-7" },
+  { key: "design8", label: "Design-8" },
   
 ];
 

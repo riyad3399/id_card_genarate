@@ -1,102 +1,163 @@
+import { Droplet } from "lucide-react";
 import formatDOB from "../../helper/formatDOB";
 
 const baseUrl = "http://localhost:5000";
-const fullUrl = (p) =>
-  !p
-    ? ""
-    : p.startsWith("http")
-    ? p
-    : `${baseUrl}${p.startsWith("/") ? "" : "/"}${p}`;
+const fullUrl = (path) => {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  return `${baseUrl}${path.startsWith("/") ? "" : "/"}${path}`;
+};
 
 export default function Design3({ data }) {
+
   const photo = fullUrl(data?.photo_url);
   const logo = fullUrl(data?.institute?.logo_url);
-    const signature = fullUrl(data?.institute?.signature_url);
-
+  const signature = fullUrl(data?.institute?.signature_url);
 
   return (
-    <div className="relative w-[57mm] h-[89mm] bg-white overflow-hidden border border-gray-300 font-sans">
-      {/* ===== BACKGROUND BLOBS ===== */}
-      <div className="absolute -top-6 -left-6 w-20 h-20 bg-orange-400 rounded-full opacity-80" />
-      <div className="absolute top-12 -right-6 w-20 h-20 bg-green-400 rounded-full opacity-80" />
-      <div className="absolute bottom-10 -left-6 w-16 h-16 bg-green-300 rounded-full opacity-70" />
-      <div className="absolute -top-10 left-8 w-16 h-16 bg-sky-500 rounded-full opacity-70" />
-      <div className="absolute bottom-0 -right-6 w-20 h-20 bg-orange-300 rounded-full opacity-80" />
-      <div className="absolute bottom-10 -right-9 w-16 h-16 bg-sky-300 rounded-full opacity-80" />
+    <div className="relative w-[57mm] h-[89mm] overflow-hidden ">
+      {/* ===== TOP RIGHT DESIGN ===== */}
+      <div className=" w-full h-[90px] ">
+        <div className="bg-[#0f5f4a] h-[60px] w-[140px] absolute rotate-[45deg] top-0 -right-10 inset-40 overflow-hidden"></div>
+        <div className="bg-gray-300 h-[10px] w-[150px] absolute  right-13 top-0 rounded-md  overflow-hidden"></div>
+        <div className="bg-gray-300 h-[10px] w-[220px] absolute  right-0 inset-18 top-5 rounded-md rotate-[45deg]  overflow-hidden"></div>
+        <div className="bg-[#0f5f4a] h-[10px] w-[110px] absolute  right-13 top-2 rounded-md  overflow-hidden"></div>
+        <div className="bg-[#0f5f4a] h-[10px] w-[140px] absolute  right-5  top-14 inset-34 rounded-md rotate-[45deg]  overflow-hidden"></div>
+      </div>
 
-      {/* ===== CONTENT ===== */}
-      <div className="relative z-10 px-3 pt-2 text-center">
-        {/* Logo */}
+      <p
+        className="font-extrabold leading-tight uppercase absolute top-4 left-0 w-full text-center text-black dark:text[#ffffff]"
+        style={{ fontSize: "clamp(10px,1.6vw,14.5px)" }}
+      >
+        {data?.institute?.name || "Your Institute Name"}
+      </p>
+
+      {/* ================= LOGO ================= */}
+      <div className="w-10 h-10 rounded-md  bg-white absolute top-[68px] left-[13px] flex items-center justify-center overflow-hidden  border-gray-300 shadow-md">
         {logo && (
-          <div className="w-9 h-9 mx-auto rounded-full  ">
-            <img src={logo} alt="logo" className="w-full h-full" />
+          <img src={logo} alt="logo" className="w-full h-full object-contain" />
+        )}
+      </div>
+
+      {/* ===== Photo ===== */}
+      <div className="relative flex justify-center ">
+        <div className="w-[80px] h-[99px] rounded-[7px] border-[3px] border-[#0f5f4a] bg-gray-100 overflow-hidden absolute -top-4">
+          {photo ? (
+            <img
+              src={fullUrl(photo)}
+              alt="student"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400">
+              No Photo
+            </div>
+          )}
+        </div>
+
+        {/* Blood Group */}
+        {data?.bloodGroup && (
+          <div className="absolute left-4 top-12 z-10">
+            <div className="relative">
+              <Droplet
+                size={27}
+                className="fill-red-600 text-red-700 drop-shadow-lg"
+                strokeWidth={1.5}
+              />
+              <span className="absolute inset-0 flex items-center top-1 justify-center text-[7.5px] font-semibold text-white">
+                {data.bloodGroup}
+              </span>
+            </div>
           </div>
         )}
+      </div>
 
-        {/* School Name */}
+      {/* ================= BODY ================= */}
+      <div className="pt2 px-4 text-gray-800 absolute top-45 z-20 w-full ">
+        {/* STUDENT NAME */}
         <p
-          className="mt-1 font-bold uppercase text-green-600 leading-tight"
-          style={{ fontSize: "clamp(13px,2vw,14px)" }}
+          className="text-center font-bold text-[#0f5f4a] whitespace-nowrap overflow-hidden leading-tight py-2 uppercase"
+          style={{ fontSize: "clamp(9px,1.6vw,13px)" }}
         >
-          {data?.institute?.name || "SCHOOL NAME"}
+          {data?.studentName || "Smith James"}
         </p>
 
-        {/* PHOTO */}
-        <div className="mt-2 flex justify-center">
-          <div className="w-[80px] h-[99px] bg-white border-[3px] border-orange-400 flex items-center justify-center rounded-[7px]">
-            {photo ? (
-              <img
-                src={photo}
-                alt="student"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-[9px] text-gray-400">PHOTO</span>
-            )}
+        {/* body */}
+        <div className=" text-[9.5px] ">
+          <div className="grid grid-cols-[21%_3%_1fr] items-start text-[9.5px] font-bold">
+            <span>ID</span>
+            <span>:</span>
+            <span
+              className="flex gap-3 whitespace-nowrap overflow-hidden"
+              style={{ fontSize: "clamp(7.5px,1.5vw,9.5px)" }}
+            >
+              <span>
+                {data?.institute?.shortName}
+                {data?.studentId || "-"}
+              </span>
+              <span>Roll : {data?.roll || "-"}</span>
+            </span>
           </div>
+
+          <Info label="Father" value={data?.fatherName || "-"} />
+
+          {data?.className && (
+            <Info label="Class" value={data?.className || "-"} />
+          )}
+          {data?.groupName && <Info label="Group" value={data?.groupName} />}
+
+          {data?.gender && <Info label="Gender" value={data?.gender || "-"} />}
+
+          {data?.dob && <Info label="D.O.B" value={formatDOB(data?.dob)} />}
+
+          <Info label="Phone" value={0 + data?.mobileNumber || "-"} />
         </div>
       </div>
 
-      {/* ===== BODY ===== */}
-      <div className="relative z-10 mt-2 px-4 text-left text-gray-800 space-y-[2px]">
-        {/* Student Name */}
-        <p
-          className="font-bold uppercase text-green-600 text-center whitespace-nowrap overflow-hidden"
-          style={{ fontSize: "clamp(9px,1.6vw,11px)" }}
-        >
-          {data?.studentName || "JONTHAN DOW"}
-        </p>
-
-        <Info label="Roll" value={data?.roll || "0125"} />
-        <Info label="Student ID" value={data?.studentId || "0125"} />
-        <Info label="Father's Name" value={data?.fatherName || "Father Name"} />
-        <Info label="Class" value={data?.className || "class Name"} />
-        <Info label="Group" value={data?.groupName || "0125"} />
-        <Info label="Gender" value={data?.gender || "Male"} />
-        <Info label="DOB" value={formatDOB(data?.dob) || "0125"} />
-      </div>
-
-      <div className="absolute bottom-[14px] right-3 text-center z-10">
+      {/* ================= SIGNATURE ================= */}
+      <div className="absolute bottom-[25px] right-4 text-center">
         {signature && (
-          <img src={signature} alt="sign" className="h-8 mx-auto" />
+          <img src={signature} alt="sign" className="h-[35px] object-cover" />
         )}
-        <p className="text-[8px] border-t font-medium">Principal </p>
+        <p className="text-[9.5px] border-t font-semibold">Principal</p>
       </div>
-      <div className="absolute text-white text-center bottom-0 left-0 w-full h-[12px] text-[8px] bg-gradient-to-r from-orange-600 to-green-500">
-        STUDENT IDENTITY CARD
+
+      {/* ===== BOTTOM LEFT DESIGN ===== */}
+      <div className="w-full h-[90px] ">
+        {/* Main diagonal block */}
+        <div className="bg-[#0f5f4a] h-[60px] w-[140px] absolute rotate-[45deg] bottom-0 -left-21 overflow-hidden"></div>
+
+        {/* Light gray bottom bar */}
+        <div className="bg-gray-300 h-[10px] w-[150px] absolute left-14 bottom-0 rounded-md overflow-hidden"></div>
+
+        {/* Long diagonal gray bar */}
+        <div
+          className="bg-gray-300 h-[10px] w-[300px] -left-23 absolute 
+          bottom-0 rounded-md rotate-[45deg] overflow-hidden"
+        ></div>
+
+        <div className="bg-[#0f5f4a] h-[10px] w-[110px] absolute left-14 bottom-2 rounded-md overflow-hidden"></div>
+
+        <div className="bg-[#0f5f4a] h-[10px] w-[140px] absolute -left-14 bottom-14 rounded-md rotate-[45deg] overflow-hidden"></div>
       </div>
+
+      {/* footer text / small website */}
     </div>
   );
 }
 
-/* ===== INFO ROW ===== */
+/* Helper: label/value row */
 function Info({ label, value }) {
   return (
-    <p
-      className="leading-tight whitespace-nowrap overflow-hidden"
-      style={{ fontSize: "clamp(7.5px,1.4vw,9.5px)" }}
-    >
-      <b>{label}</b> : {value}
-    </p>
+    <div className="grid grid-cols-[21%_3%_1fr] items-start">
+      <span className="font-bold">{label}</span>
+      <span className="font-bold">:</span>
+      <span
+        className="whitespace-nowrap overflow-hidden font-bold"
+        style={{ fontSize: "clamp(7.5px,1.5vw,9.5px)" }}
+      >
+        {value}
+      </span>
+    </div>
   );
 }

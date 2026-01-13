@@ -211,7 +211,6 @@ export default function Design4({ data }) {
   );
 }
 
-
 /* ================= INFO ROW ================= */
 function Info({ label, value }) {
   return (

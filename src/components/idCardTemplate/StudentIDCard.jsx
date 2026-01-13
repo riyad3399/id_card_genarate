@@ -6,6 +6,7 @@ import Design4 from "./designs/Design4";
 import Design5 from "./designs/Design5";
 import Design6 from "./designs/Design6";
 import Design7 from "./designs/Design7";
+import Design8 from "./designs/Design8";
 
 const DESIGN_MAP = {
   design1: Design1,
@@ -15,6 +16,7 @@ const DESIGN_MAP = {
   design5: Design5,
   design6: Design6,
   design7: Design7,
+  design8: Design8,
 };
 
 function StudentIDCard({ data, design = "design4" }) {
